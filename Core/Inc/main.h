@@ -57,8 +57,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define SD_DETECT_Pin GPIO_PIN_1
-#define SD_DETECT_GPIO_Port GPIOC
+#define BTN_ENGAGE_Pin GPIO_PIN_1
+#define BTN_ENGAGE_GPIO_Port GPIOC
 #define BTN_UP_Pin GPIO_PIN_2
 #define BTN_UP_GPIO_Port GPIOC
 #define BTN_RIGHT_Pin GPIO_PIN_3
@@ -67,10 +67,10 @@ void Error_Handler(void);
 #define BTN_DOWN_GPIO_Port GPIOC
 #define BTN_LEFT_Pin GPIO_PIN_5
 #define BTN_LEFT_GPIO_Port GPIOC
-#define BTN_ENGAGE_Pin GPIO_PIN_8
-#define BTN_ENGAGE_GPIO_Port GPIOB
-#define BTN_ABORT_Pin GPIO_PIN_9
-#define BTN_ABORT_GPIO_Port GPIOB
+#define BTN_ABORT_Pin GPIO_PIN_10
+#define BTN_ABORT_GPIO_Port GPIOA
+#define SD_DETECT_Pin GPIO_PIN_8
+#define SD_DETECT_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
