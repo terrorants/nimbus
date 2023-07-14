@@ -301,4 +301,21 @@ void EXTI15_10_IRQHandler(void)
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_14);
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_15);
 }
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  switch (GPIO_Pin)
+  {
+    case BTN_UP_Pin:
+    case BTN_RIGHT_Pin:
+    case BTN_DOWN_Pin:
+    case BTN_LEFT_Pin:
+    case BTN_ENGAGE_Pin:
+    case BTN_ABORT_Pin:
+      break;
+
+    default:
+      break;
+  }
+}
 /* USER CODE END 1 */
