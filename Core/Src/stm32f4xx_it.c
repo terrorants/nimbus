@@ -310,7 +310,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     case BTN_RIGHT_Pin:
     case BTN_DOWN_Pin:
     case BTN_LEFT_Pin:
-    case BTN_ENGAGE_Pin:
+    //case BTN_ENGAGE_Pin:
     case BTN_ABORT_Pin:
       break;
 

@@ -23,7 +23,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdint.h>
+#include <stdbool.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -81,7 +82,7 @@ static void MX_SPI1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  bool led_on = false;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -117,6 +118,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	HAL_GPIO_WritePin(USER_LED_GPIO_Port, USER_LED_Pin, led_on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	led_on = !led_on;
+
+	HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -346,10 +351,18 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
-  /*Configure GPIO pins : BTN_ENGAGE_Pin BTN_UP_Pin BTN_RIGHT_Pin BTN_DOWN_Pin
-                           BTN_LEFT_Pin */
-  GPIO_InitStruct.Pin = BTN_ENGAGE_Pin|BTN_UP_Pin|BTN_RIGHT_Pin|BTN_DOWN_Pin
-                          |BTN_LEFT_Pin;
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(USER_LED_GPIO_Port, USER_LED_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : USER_LED_Pin */
+  GPIO_InitStruct.Pin = USER_LED_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(USER_LED_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : BTN_UP_Pin BTN_RIGHT_Pin BTN_DOWN_Pin BTN_LEFT_Pin */
+  GPIO_InitStruct.Pin = BTN_UP_Pin|BTN_RIGHT_Pin|BTN_DOWN_Pin|BTN_LEFT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
