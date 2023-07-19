@@ -20,6 +20,7 @@
 #include "main.h"
 #include "fatfs.h"
 #include "usb_device.h"
+#include "events.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */

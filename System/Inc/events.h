@@ -22,6 +22,6 @@ typedef enum
 
 void eventSet(event_idx_e eventIdx);
 void eventClear(event_idx_e eventIdx);
-bool eventCheck(event_idx_e eventIdx);
+bool eventIsSet(event_idx_e eventIdx);
 
 #endif // EVENTS_H
