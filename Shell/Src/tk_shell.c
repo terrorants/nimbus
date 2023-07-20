@@ -12,39 +12,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
-#include "drv_vcp.h"
-#include "TkShell.h"
-
-static char gbuf[2048];
-
-#define PRINTF(...) \
-            do \
-            { \
-                sprintf(gbuf, __VA_ARGS__); \
-                VCP_SendData((uint8_t *)gbuf, strnlen(gbuf, 2048)); \
-            } while (0)
-
-#define TK_SHELL_METHOD(c, verb)              int __tk_shell_ ## c ## _ ## verb(int __unused argc, char __unused **argv)
-#define TK_SHELL_COMMAND(name, desc)          {#name, (tk_shell_command_verb_s *)__tk_shell_verbs_ ## name, desc}
-#define TK_SHELL_VERBS(name)                  const tk_shell_command_verb_s __tk_shell_verbs_ ## name[]
-#define TK_SHELL_VERB(c, name, desc)          {#name, __tk_shell_ ## c ## _ ## name, desc}
-
-#define CMD_BUF_LEN 64
-#define TK_SHELL_MAX_ARGS 10
-
-typedef struct
-{
-  const char *name;
-  int        (*func)(int argc, char **argv);
-  const char *desc;
-} tk_shell_command_verb_s;
-
-typedef struct
-{
-  const char *name;
-  tk_shell_command_verb_s *verbs;
-  const char *desc;
-} tk_shell_command_s;
+#include "tk_shell.h"
+#include "tk_shell_gpio.h"
 
 
 //static const uint32_t reg_lookup[] =
@@ -64,16 +33,6 @@ typedef struct
 //    CYREG_PRT12_DR, // 12
 //    CYREG_PRT13_DR, // 13
 //};
-TK_SHELL_METHOD(gpio, set);
-TK_SHELL_METHOD(gpio, config);
-TK_SHELL_METHOD(gpio, get);
-static TK_SHELL_VERBS(gpio) =
-{
-    TK_SHELL_VERB(gpio, set, "set GPIO state"),
-    TK_SHELL_VERB(gpio, config, "configure GPIO"),
-    TK_SHELL_VERB(gpio, get, "get GPIO state"),
-    { "", NULL, "" }
-};
 
 //TK_SHELL_METHOD(wm, vol_set);
 //TK_SHELL_METHOD(wm, vol_get);
@@ -130,6 +89,8 @@ static TK_SHELL_VERBS(gpio) =
 //    { "", NULL, "" }
 //};
 
+char gbuf[2048];
+
 static const tk_shell_command_s commands[] =
 {
     TK_SHELL_COMMAND(gpio, "GPIO commands"),
@@ -153,81 +114,6 @@ int strcicmp(char const *a, char const *b)
         if (d != 0 || !*a)
             return d;
     }
-}
-
-TK_SHELL_METHOD(gpio, set)
-{
-    uint32_t port, pin, state;
-    int i = 2;
-
-    argc -= i;
-
-    if (argc != 3)
-    {
-        PRINTF("Invalid number of arguments!\n");
-        return -1;
-    }
-
-    port = atoi(argv[i++]);
-    pin = atoi(argv[i++]);
-    state = atoi(argv[i]);
-
-//    CY_SYS_PINS_SET_DRIVE_MODE(reg_lookup[port], pin, CY_SYS_PINS_DM_STRONG);
-//
-//    if (state)
-//    {
-//        CY_SYS_PINS_SET_PIN(reg_lookup[port], pin);
-//    }
-//    else
-//    {
-//        CY_SYS_PINS_CLEAR_PIN(reg_lookup[port], pin);
-//    }
-//
-//    PRINTF("> gpio:ok %d\n", (int)CY_SYS_PINS_READ_PIN(reg_lookup[port], pin));
-    return 0;
-}
-
-TK_SHELL_METHOD(gpio, config)
-{
-    uint32_t port, pin, mode;
-    int i = 2;
-
-    argc -= i;
-
-    if (argc != 3)
-    {
-        PRINTF("Invalid number of arguments!\n");
-        return -1;
-    }
-
-    port = atoi(argv[i++]);
-    pin = atoi(argv[i++]);
-    mode = atoi(argv[i]);
-
-//    CY_SYS_PINS_SET_DRIVE_MODE(reg_lookup[port], pin, mode);
-
-    return 0;
-}
-
-TK_SHELL_METHOD(gpio, get)
-{
-    uint32_t port, pin;
-    int i = 2;
-
-    argc -= i;
-
-    if (argc != 2)
-    {
-        PRINTF("Invalid number of arguments!\n");
-        return -1;
-    }
-
-    port = atoi(argv[i++]);
-    pin = atoi(argv[i]);
-
-//    PRINTF("> gpio:ok %d\n", (int)CY_SYS_PINS_READ_PIN(reg_lookup[port], pin));
-
-    return 0;
 }
 
 //TK_SHELL_METHOD(wm, vol_set)
@@ -507,10 +393,12 @@ static int TkShellProcessCommand(void)
         {
             if (strcicmp(argv[0], commands[i].name) == 0)
             {
+                argc--;
                 while (strcmp(commands[i].verbs[j].name, "") != 0)
                 {
                     if (strcicmp(argv[1], commands[i].verbs[j].name) == 0)
                     {
+                        argc--;
                         retval = commands[i].verbs[j].func(argc, argv);
                         found = true;
                         break;
@@ -579,7 +467,7 @@ void TkShellService(void)
                     PRINTF("\n");
                     TkShellProcessCommand();
                 }
-                PRINTF("\n\U00002744 ] ");
+                PRINTF("\n\U00002601] ");
                 cmd_char_count = 0;
                 cmd_buf[0] = '\0';
                 break;

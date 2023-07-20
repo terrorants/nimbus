@@ -49,7 +49,7 @@ uint16_t cbufWriteBlock(cbufHandle_t *handle, uint8_t *pData, uint16_t writeLeng
 {
   uint16_t count = 0;
 
-  while ((count < writeLength) && (handle->rdIdx != handle->wrIdx))
+  while (count < writeLength)
   {
     handle->pData[handle->wrIdx] = *pData;
     handle->wrIdx = CBUF_NEXT_WR_IDX(handle);
