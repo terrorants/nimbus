@@ -4,6 +4,10 @@
  *  Created on: Jul 19, 2023
  *      Author: terence_kim
  */
+#include <ctype.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "tk_shell_gpio.h"
 #include "stm32f4xx.h"
 
@@ -30,15 +34,15 @@ static GPIO_TypeDef* getPortFromChar(char c)
   return NULL;
 }
 
-static char getCharFromPort(GPIO_TypeDef *g)
-{
- if (g == GPIOA) return 'A';
- if (g == GPIOB) return 'B';
- if (g == GPIOC) return 'C';
- if (g == GPIOH) return 'H';
-
- return '\0';
-}
+//static char getCharFromPort(GPIO_TypeDef *g)
+//{
+// if (g == GPIOA) return 'A';
+// if (g == GPIOB) return 'B';
+// if (g == GPIOC) return 'C';
+// if (g == GPIOH) return 'H';
+//
+// return '\0';
+//}
 
 TK_SHELL_METHOD(gpio, set)
 {
