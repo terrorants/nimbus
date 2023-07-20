@@ -26,6 +26,9 @@
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
 #include <stdbool.h>
+
+#include "drv_vcp.h"
+#include "TkShell.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -111,16 +114,25 @@ int main(void)
   MX_USB_DEVICE_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-
+  VCP_Init(); // dependent on MX_USB_DEVICE_Init()
+  TkShellInit();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    // TODO: Audio playback
+
+    // TODO: Display
+
+    // TODO: Button handling
+
+    TkShellService();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    VCP_Flush();
   }
   /* USER CODE END 3 */
 }

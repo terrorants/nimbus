@@ -10,8 +10,8 @@
 
 typedef enum
 {
-  EVT_USB_CDC_RX			= 0,
-  EVT_USB_CDC_TX_FLUSH      = 1,
+  EVT_USB_CDC_RX           = 0,
+  EVT_USB_CDC_TX_DONE      = 1,
 } event_idx_e;
 
 //#define eventSet(e)         do { eventMask |= (1 << e); } while (0)
