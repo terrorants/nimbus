@@ -1,8 +1,9 @@
 #include "buttons.h"
 #include "main.h"
 #include "stm32f4xx.h"
+#include "tmr.h"
 
-#define BTN_ENTRY(name) [BUTTON_ID_##name] = { BTN_##name##_GPIO_PORT, BTN_##name, BUTTON_STATE_unpressed }
+#define BTN_ENTRY(name) [BUTTON_ID_##name] = { BTN_##name##_GPIO_Port, BTN_##name##_Pin, BUTTON_STATE_unpressed }
 
 typedef enum
 {
@@ -20,30 +21,29 @@ typedef struct
 
 
 
-typedef enum
-{
-  BUTTON_EVENT_idle,
-  BUTTON_EVENT_debounce,
-  BUTTON_EVENT_press,
-  BUTTON_EVENT_press_release,
-  BUTTON_EVENT_long_press,
-  BUTTON_EVENT_long_press_release,
-  BUTTON_EVENT_vlong_press,
-  BUTTON_EVENT_vlong_press_release
-} button_event_e;
-
-static const uint32_t buttonTimerThresholds[] = 
-{
-  [BUTTON_EVENT_idle] = 0,
-  [BUTTON_EVENT_debounce] = 20,
-  [BUTTON_EVENT_press] = ,
-  [BUTTON_EVENT_press_release] = ,
-  [BUTTON_EVENT_long_press] = 800,
-  [BUTTON_EVENT_long_press_release] = ,
-  [BUTTON_EVENT_vlong_press] = 3000,
-  [BUTTON_EVENT_vlong_press_release] = ,
-};
-
+//typedef enum
+//{
+//  BUTTON_EVENT_idle,
+//  BUTTON_EVENT_debounce,
+//  BUTTON_EVENT_press,
+//  BUTTON_EVENT_press_release,
+//  BUTTON_EVENT_long_press,
+//  BUTTON_EVENT_long_press_release,
+//  BUTTON_EVENT_vlong_press,
+//  BUTTON_EVENT_vlong_press_release
+//} button_event_e;
+//
+//static const uint32_t buttonTimerThresholds[] =
+//{
+//  [BUTTON_EVENT_idle] = 0,
+//  [BUTTON_EVENT_debounce] = 20,
+//  [BUTTON_EVENT_press] = ,
+//  [BUTTON_EVENT_press_release] = ,
+//  [BUTTON_EVENT_long_press] = 800,
+//  [BUTTON_EVENT_long_press_release] = ,
+//  [BUTTON_EVENT_vlong_press] = 3000,
+//  [BUTTON_EVENT_vlong_press_release] = ,
+//};
 static tmr_entry_s btnTimer[BUTTON_ID_MAX];
 
 static button_config_s buttonConfigLUT[] =

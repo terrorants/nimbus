@@ -10,6 +10,8 @@
 #include <string.h>                                         // Include String
 #include <ctype.h>                                          // Include CType
 
+#include "stm32f4xx.h"
+
 // NOTE: If you are using CMSIS, the registers can also be
 // accessed through CoreDebug->DHCSR & CoreDebug_DHCSR_C_DEBUGEN_Msk
 #define HALT_IF_DEBUGGING()                                 \

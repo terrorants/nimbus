@@ -52,8 +52,8 @@ void tmrAdd(tmr_entry_s *pEntry)
 void tmrDelete(tmr_entry_s *pEntry)
 {
   ENTER_CRIT_SECTION;
-  tmrFuncType *tmrPrev = (tmr_entry_s *)&tmrHead;
-  tmrFuncType *tmrCurr;
+  tmr_entry_s *tmrPrev = (tmr_entry_s *)&tmrHead;
+  tmr_entry_s *tmrCurr;
   while ((tmrCurr = tmrPrev->next) != NULL)
   {
     if (tmrCurr == pEntry)

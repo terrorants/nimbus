@@ -1,12 +1,14 @@
 #ifndef TMR_H
 #define TMR_H
 
+#include <stdint.h>
+
 extern uint32_t tmrBaseMs;
 
 #define tmrNow()              (tmrBaseMs)
 #define tmrElapsedMs(then)    (tmrNow() - then)
 
-typedef uint32_t (*tmr_callback_fp)(void *arg)
+typedef uint32_t (*tmr_callback_fp)(void *arg);
 
 typedef struct tmr_entry
 {
