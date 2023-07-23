@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "tmr.h"
+#include "buttons.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -307,13 +308,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   switch (GPIO_Pin)
   {
-    case BTN_UP_Pin:
-    case BTN_RIGHT_Pin:
-    case BTN_DOWN_Pin:
-    case BTN_LEFT_Pin:
-    //case BTN_ENGAGE_Pin:
-    case BTN_ABORT_Pin:
-      break;
+    case BTN_UP_Pin: buttons_interrupt_handler(BUTTON_ID_UP); break;
+    case BTN_RIGHT_Pin: buttons_interrupt_handler(BUTTON_ID_RIGHT); break;
+    case BTN_DOWN_Pin: buttons_interrupt_handler(BUTTON_ID_DOWN); break;
+    case BTN_LEFT_Pin: buttons_interrupt_handler(BUTTON_ID_LEFT); break;
+    case BTN_ENTER_Pin: buttons_interrupt_handler(BUTTON_ID_ENTER); break;
+    case BTN_CANCEL_Pin: buttons_interrupt_handler(BUTTON_ID_CANCEL); break;
 
     default:
       break;

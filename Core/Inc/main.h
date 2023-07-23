@@ -57,6 +57,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define BTN_ENTER_Pin GPIO_PIN_0
+#define BTN_ENTER_GPIO_Port GPIOC
 #define USER_LED_Pin GPIO_PIN_1
 #define USER_LED_GPIO_Port GPIOC
 #define BTN_UP_Pin GPIO_PIN_2
@@ -67,8 +69,8 @@ void Error_Handler(void);
 #define BTN_DOWN_GPIO_Port GPIOC
 #define BTN_LEFT_Pin GPIO_PIN_5
 #define BTN_LEFT_GPIO_Port GPIOC
-#define BTN_ABORT_Pin GPIO_PIN_10
-#define BTN_ABORT_GPIO_Port GPIOA
+#define BTN_CANCEL_Pin GPIO_PIN_10
+#define BTN_CANCEL_GPIO_Port GPIOA
 #define SD_DETECT_Pin GPIO_PIN_8
 #define SD_DETECT_GPIO_Port GPIOB
 

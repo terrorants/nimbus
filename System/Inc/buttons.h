@@ -1,17 +1,7 @@
 #ifndef BUTTONS_H
 #define BUTTONS_H
 
-typedef enum
-{
-  BUTTON_EVENT_idle,
-  BUTTON_EVENT_debounce,
-  BUTTON_EVENT_press,
-  BUTTON_EVENT_press_release,
-  BUTTON_EVENT_long_press,
-  BUTTON_EVENT_long_press_release,
-  BUTTON_EVENT_vlong_press,
-  BUTTON_EVENT_vlong_press_release
-} button_event_e;
+#include <stdbool.h>
 
 typedef enum
 {
@@ -25,6 +15,7 @@ typedef enum
 } button_id_e;
 
 void buttons_init(void);
+bool buttons_is_pressed(button_id_e id);
 void buttons_interrupt_handler(button_id_e id);
 
 #endif // BUTTONS_H
