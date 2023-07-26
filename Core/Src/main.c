@@ -102,7 +102,7 @@ int main(void)
   MX_I2C1_Init();
   MX_USB_DEVICE_Init();
   MX_SPI1_Init();
-//  MX_FATFS_Init();
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   TkShellInit();
   /* USER CODE END 2 */

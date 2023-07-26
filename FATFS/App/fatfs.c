@@ -17,9 +17,9 @@
   */
 #include "logger.h"
 #include "main.h"
+#include "sdio.h"
 /* USER CODE END Header */
 #include "fatfs.h"
-#include "sdio.h"
 
 uint8_t retSD;    /* Return value for SD */
 char SDPath[4];   /* SD logical drive path */
