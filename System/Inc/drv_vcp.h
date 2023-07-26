@@ -13,7 +13,7 @@
 
 void VCP_Init(void);
 
-void VCP_SendData(uint8_t *buf, uint16_t len);
+void VCP_SendData(const uint8_t *buf, uint16_t len);
 
 bool VCP_GetByte(uint8_t *b);
 

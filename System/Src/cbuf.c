@@ -45,7 +45,7 @@ uint16_t cbufReadBlock(cbufHandle_t *handle, uint8_t *pOut, uint16_t readLength)
   return count;
 }
 
-uint16_t cbufWriteBlock(cbufHandle_t *handle, uint8_t *pData, uint16_t writeLength)
+uint16_t cbufWriteBlock(cbufHandle_t *handle, const uint8_t *pData, uint16_t writeLength)
 {
   uint16_t count = 0;
 

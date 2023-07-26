@@ -56,7 +56,7 @@ uint16_t cbufReadBlock(cbufHandle_t *handle, uint8_t *pOut, uint16_t readLength)
  * @param writeLength the number of bytes to write
  * @return uint16_t number of bytes actually written
  */
-uint16_t cbufWriteBlock(cbufHandle_t *handle, uint8_t *pData, uint16_t writeLength);
+uint16_t cbufWriteBlock(cbufHandle_t *handle, const uint8_t *pData, uint16_t writeLength);
 
 /**
  * @brief Return bytes available for read.
