@@ -89,8 +89,6 @@
 //    { "", NULL, "" }
 //};
 
-char gbuf[2048];
-
 static const tk_shell_command_s commands[] =
 {
     TK_SHELL_COMMAND(gpio, "GPIO commands"),

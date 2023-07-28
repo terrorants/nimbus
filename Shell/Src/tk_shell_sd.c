@@ -12,24 +12,28 @@
 #include "ff.h"
 #include "stm32f4xx.h"
 #include "fatfs.h"
+#include "usb_device.h"
+#include "usbd_cdc_msc.h"
 
 TK_SHELL_METHOD(sd, test);
 
 TK_SHELL_METHOD(sd, test)
 {
   int i = 0;
+  uint32_t on;
 
-  if (argc != 0)
+  if (argc != 1)
   {
     PRINTF("Invalid number of arguments!\n");
     return -1;
   }
 
   //some variables for FatFs
-  FATFS FatFs;     //Fatfs handle
-  FIL fil;         //File handle
-  FRESULT fres; //Result after operations
+  // FATFS FatFs;     //Fatfs handle
+  // FIL fil;         //File handle
+  // FRESULT fres; //Result after operations
 
+  on = atoi(argv[i++]);
   //Open the file system
   //fres = f_mount(&FatFs, "", 1); //1=mount now
   //if (fres != FR_OK)
@@ -39,7 +43,7 @@ TK_SHELL_METHOD(sd, test)
   usb_device_deinit();
   HAL_Delay(3000);
 
-  USBD_MscEnable(true);
+  USBD_MscEnable(!!on);
 
   usb_device_init();
 

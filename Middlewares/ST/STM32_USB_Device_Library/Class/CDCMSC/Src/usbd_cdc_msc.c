@@ -73,6 +73,7 @@
 #include "usbd_ctlreq.h"
 #include "usbd_desc.h"
 #include "drv_vcp.h"
+#include "logger.h"
 
 /** @addtogroup STM32_USB_DEVICE_LIBRARY
   * @{
@@ -223,7 +224,7 @@ static uint8_t CDCCmdEpAdd = CDC_CMD_EP;
   * @}
   */
 
-static bool mscEnabled = false;
+static bool mscEnabled = true;
 static bool cdcIsOpened = false;
 
 /** @defgroup USBD_CDC_MSC_Private_Functions
@@ -677,6 +678,12 @@ static uint8_t  USBD_CDC_MSC_DeInit (USBD_HandleTypeDef *pdev,
 
 static uint8_t USBD_CDC_MSC_Setup(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *req)
 {
+  LOG(USB, DEBUG, "%s:", __FUNCTION__);
+  LOG(USB, DEBUG, "\tbmRequest = 0x%X", req->bmRequest);
+  LOG(USB, DEBUG, "\tbRequest  = 0x%X", req->bRequest);
+  LOG(USB, DEBUG, "\twValue    = 0x%X", req->wValue);
+  LOG(USB, DEBUG, "\twIndex    = 0x%X", req->wIndex);
+  LOG(USB, DEBUG, "\twLength   = 0x%X", req->wLength);
   if (LOBYTE(req->wIndex) == USB_MSC_INTERFACE)
   {
     USBD_MSC_Setup(pdev, req);

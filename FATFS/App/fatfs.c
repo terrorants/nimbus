@@ -44,14 +44,14 @@ void MX_FATFS_Init(void)
   fres = f_mount(&SDFatFS, SDPath, 0); //1=mount now
   //if (fres != FR_OK)
   {
-    LOG(STOR, ERROR, "f_mount error (%d)\r\n", fres);
+    LOG(STOR, ERROR, "f_mount error (%d)\r", fres);
     // return;
   }
 
   fres = f_open(&SDFile, "README.txt", FA_READ);
   //if (fres != FR_OK)
   {
-    LOG(STOR, ERROR, "f_open error (%d)\r\n", fres);
+    LOG(STOR, ERROR, "f_open error (%d)\r", fres);
     // return;
   }
 
@@ -61,7 +61,7 @@ void MX_FATFS_Init(void)
   fres = f_read(&SDFile, rtext, sizeof(rtext), (UINT*)&bytesread);
   //if (fres != FR_OK)
   {
-    LOG(STOR, ERROR, "f_read error (%d) - %s (%d)\r\n", fres, rtext, bytesread);
+    LOG(STOR, ERROR, "f_read error (%d) - %s (%d)\r", fres, rtext, bytesread);
     // return;
   }
 
@@ -74,33 +74,33 @@ void MX_FATFS_Init(void)
   uint8_t buffer[_MAX_SS];
   FIL MyFile;
 
-  LOG(STOR, INFO, "retSD = %d, SDPath = %s\n", retSD, SDPath);
+  LOG(STOR, INFO, "retSD = %d, SDPath = %s", retSD, SDPath);
   /*##-2- Register the file system object to the FatFs module ##############*/
   if((fres = f_mount(&SDFatFS, (TCHAR const*)SDPath, 1)) != FR_OK)
   {
     /* FatFs Initialization Error */
-    LOG(STOR, ERROR, "00 F_error (%d)\n", fres);
+    LOG(STOR, ERROR, "00 F_error (%d)", fres);
   }
   else
   {
     HAL_SD_CardInfoTypeDef cardInfo;
     HAL_SD_GetCardInfo(&hsd, &cardInfo);
 
-    LOG(STOR, DEBUG, "CardType = %d\n", cardInfo.CardType);                     /*!< Specifies the card Type                         */
+    LOG(STOR, DEBUG, "CardType = %d", cardInfo.CardType);                     /*!< Specifies the card Type                         */
   
-    LOG(STOR, DEBUG, "CardVersion = %d\n", cardInfo.CardVersion);                  /*!< Specifies the card version                      */
+    LOG(STOR, DEBUG, "CardVersion = %d", cardInfo.CardVersion);                  /*!< Specifies the card version                      */
 
-    LOG(STOR, DEBUG, "Class = %d\n", cardInfo.Class);                        /*!< Specifies the class of the card class           */
+    LOG(STOR, DEBUG, "Class = %d", cardInfo.Class);                        /*!< Specifies the class of the card class           */
 
-    LOG(STOR, DEBUG, "RelCardAdd = %d\n", cardInfo.RelCardAdd);                   /*!< Specifies the Relative Card Address             */
+    LOG(STOR, DEBUG, "RelCardAdd = %d", cardInfo.RelCardAdd);                   /*!< Specifies the Relative Card Address             */
   
-    LOG(STOR, DEBUG, "BlockNbr = %d\n", cardInfo.BlockNbr);                     /*!< Specifies the Card Capacity in blocks           */
+    LOG(STOR, DEBUG, "BlockNbr = %d", cardInfo.BlockNbr);                     /*!< Specifies the Card Capacity in blocks           */
 
-    LOG(STOR, DEBUG, "BlockSize = %d\n", cardInfo.BlockSize);                    /*!< Specifies one block size in bytes               */
+    LOG(STOR, DEBUG, "BlockSize = %d", cardInfo.BlockSize);                    /*!< Specifies one block size in bytes               */
   
-    LOG(STOR, DEBUG, "LogBlockNbr = %d\n", cardInfo.LogBlockNbr);                  /*!< Specifies the Card logical Capacity in blocks   */
+    LOG(STOR, DEBUG, "LogBlockNbr = %d", cardInfo.LogBlockNbr);                  /*!< Specifies the Card logical Capacity in blocks   */
 
-    LOG(STOR, DEBUG, "LogBlockSize = %d\n", cardInfo.LogBlockSize);                 /*!< Specifies logical block size in bytes           */
+    LOG(STOR, DEBUG, "LogBlockSize = %d", cardInfo.LogBlockSize);                 /*!< Specifies logical block size in bytes           */
 
     return;
     /*##-3- Create a FAT file system (format) on the logical drive #########*/
@@ -108,7 +108,7 @@ void MX_FATFS_Init(void)
     if((fres = f_mkfs((TCHAR const*)SDPath, FM_ANY, 0, buffer, sizeof(buffer))) != FR_OK)
     {
       /* FatFs Format Error */
-      LOG(STOR, ERROR, "01 F_error (%d)\n", fres);
+      LOG(STOR, ERROR, "01 F_error (%d)", fres);
     }
     else
     {       
@@ -116,7 +116,7 @@ void MX_FATFS_Init(void)
       if((fres = f_open(&MyFile, "STM32.TXT", FA_CREATE_ALWAYS | FA_WRITE)) != FR_OK)
       {
         /* 'STM32.TXT' file Open for write Error */
-        LOG(STOR, ERROR, "02 F_error (%d)\n", fres);
+        LOG(STOR, ERROR, "02 F_error (%d)", fres);
       }
       else
       {
@@ -126,13 +126,13 @@ void MX_FATFS_Init(void)
         /*##-6- Close the open text file #################################*/
         if ((fres = f_close(&MyFile)) != FR_OK )
         {
-          LOG(STOR, ERROR, "03 F_error (%d)\n", fres);
+          LOG(STOR, ERROR, "03 F_error (%d)", fres);
         }
         
         if((byteswritten == 0) || (fres != FR_OK))
         {
           /* 'STM32.TXT' file Write or EOF Error */
-          LOG(STOR, ERROR, "04 F_error (%d)\n", fres);
+          LOG(STOR, ERROR, "04 F_error (%d)", fres);
         }
         else
         {      
@@ -140,7 +140,7 @@ void MX_FATFS_Init(void)
           if((fres = f_open(&MyFile, "STM32.TXT", FA_READ)) != FR_OK)
           {
             /* 'STM32.TXT' file Open for read Error */
-            LOG(STOR, ERROR, "05 F_error (%d)\n", fres);
+            LOG(STOR, ERROR, "05 F_error (%d)", fres);
           }
           else
           {
@@ -150,7 +150,7 @@ void MX_FATFS_Init(void)
             if((bytesread == 0) || (fres != FR_OK))
             {
               /* 'STM32.TXT' file Read or EOF Error */
-              LOG(STOR, ERROR, "06 F_error (%d)\n", fres);
+              LOG(STOR, ERROR, "06 F_error (%d)", fres);
             }
             else
             {
@@ -161,7 +161,7 @@ void MX_FATFS_Init(void)
               if((bytesread != byteswritten))
               {                
                 /* Read data is different from the expected data */
-                LOG(STOR, ERROR, "07 F_error (%d)\n", fres);
+                LOG(STOR, ERROR, "07 F_error (%d)", fres);
               }
               else
               {
