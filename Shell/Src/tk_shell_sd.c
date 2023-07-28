@@ -36,6 +36,15 @@ TK_SHELL_METHOD(sd, test)
   // {
   //   PRINTF("f_mount error (%d)\r\n", fres);
   // }
+  usb_device_deinit();
+  HAL_Delay(3000);
+
+  USBD_MscEnable(true);
+
+  usb_device_init();
+
+  HAL_Delay(3000);
+
   MX_FATFS_Init();
 
     // port = *(argv[i++]);

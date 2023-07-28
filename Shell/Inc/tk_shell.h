@@ -24,7 +24,7 @@ extern char gbuf[];
             do \
             { \
                 sprintf(gbuf, __VA_ARGS__); \
-                VCP_SendData((uint8_t *)gbuf, strnlen(gbuf, 2048)); \
+                VCP_SendData(gbuf, strnlen(gbuf, 2048)); \
             } while (0)
 
 #define TK_SHELL_METHOD(c, verb)              int __tk_shell_ ## c ## _ ## verb(int __unused argc, char __unused **argv)

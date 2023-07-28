@@ -268,8 +268,7 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
   /* USER CODE BEGIN 7 */
   int8_t ret = -1;
 
-   HAL_SD_WriteBlocks(&hsd, buf, blk_addr, blk_len, HAL_MAX_DELAY);
-
+  HAL_SD_WriteBlocks(&hsd, buf, blk_addr, blk_len, HAL_MAX_DELAY);
 
   /* Wait until SD card is ready to use for new operation */
   while (HAL_SD_GetCardState(&hsd) != HAL_SD_CARD_TRANSFER){}

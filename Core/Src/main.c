@@ -33,7 +33,6 @@
 #include <stdbool.h>
 
 #include "drv_vcp.h"
-#include "usbd_cdc_if.h"
 #include "tk_shell.h"
 /* USER CODE END Includes */
 

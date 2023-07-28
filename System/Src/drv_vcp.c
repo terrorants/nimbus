@@ -6,8 +6,7 @@
  */
 #include "drv_vcp.h"
 #include "cbuf.h"
-#include "usbd_cdc_if.h"
-#include "usbd_cdc.h"
+#include "usbd_cdc_msc.h"
 #include "events.h"
 
 #define DRV_VCP_TX_BUF_SIZE 2048
@@ -27,11 +26,11 @@ void VCP_Init(void)
   cbufInit(&rxBufHandle, rxBuf, DRV_VCP_RX_BUF_SIZE);
 }
 
-void VCP_SendData(const uint8_t *buf, uint16_t len)
+void VCP_SendData(const char *buf, uint16_t len)
 {
   while (len > cbufSpaceAvailable(&txBufHandle))
   {
-    cbufWriteBlock(&txBufHandle, buf, cbufSpaceAvailable(&txBufHandle));
+    cbufWriteBlock(&txBufHandle, (uint8_t *)buf, cbufSpaceAvailable(&txBufHandle));
     VCP_Flush();
 
     buf += cbufSpaceAvailable(&txBufHandle);
@@ -40,7 +39,7 @@ void VCP_SendData(const uint8_t *buf, uint16_t len)
 
   if (len > 0)
   {
-    cbufWriteBlock(&txBufHandle, buf, len);
+    cbufWriteBlock(&txBufHandle, (uint8_t *)buf, len);
   }
 }
 
@@ -69,7 +68,7 @@ void VCP_Flush(void)
   uint16_t txLen = cbufBytesToRead(&txBufHandle);
   uint16_t bytesToEnd = txBufHandle.bufSz - txBufHandle.rdIdx;
 
-  if (CDC_IsBusy() || USBD_CDC_IsOpened() == false)
+  if (USBD_CDC_IsOpened() == false)
   {
     return; // check back later
   }

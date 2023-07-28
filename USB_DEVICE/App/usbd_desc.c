@@ -24,7 +24,7 @@
 #include "usbd_conf.h"
 
 /* USER CODE BEGIN INCLUDE */
-
+#include "usbd_cdc_msc.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,15 +65,33 @@
 #define USBD_VID     1155
 #define USBD_LANGID_STRING     1033
 #define USBD_MANUFACTURER_STRING     "STMicroelectronics"
-#define USBD_PID_FS     22336
-#define USBD_PRODUCT_STRING_FS     "STM32 Virtual ComPort"
-#define USBD_CONFIGURATION_STRING_FS     "CDC Config"
-#define USBD_INTERFACE_STRING_FS     "CDC Interface"
+#define USBD_PID_FS     22314
+#define USBD_PRODUCT_STRING_FS     "STM32 Mass Storage"
+#define USBD_CONFIGURATION_STRING_FS     "MSC Config"
+#define USBD_INTERFACE_STRING_FS     "MSC Interface"
 
 #define USB_SIZ_BOS_DESC            0x0C
 
 /* USER CODE BEGIN PRIVATE_DEFINES */
+#undef USBD_VID
+#undef USBD_LANGID_STRING
+#undef USBD_MANUFACTURER_STRING
+#undef USBD_PID_FS
+#undef USBD_PRODUCT_STRING_FS
+#undef USBD_CONFIGURATION_STRING_FS
+#undef USBD_INTERFACE_STRING_FS
 
+#undef USB_SIZ_BOS_DESC
+
+#define USBD_VID     1155
+#define USBD_LANGID_STRING     1033
+#define USBD_MANUFACTURER_STRING     "STMicroelectronics"
+#define USBD_PID_FS     22314
+#define USBD_PRODUCT_STRING_FS     "STM32 Mass Storage"
+#define USBD_CONFIGURATION_STRING_FS     "MSC Config"
+#define USBD_INTERFACE_STRING_FS     "MSC Interface"
+
+#define USB_SIZ_BOS_DESC            0x0C
 /* USER CODE END PRIVATE_DEFINES */
 
 /**
@@ -164,9 +182,9 @@ __ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
   0x00,                       /*bcdUSB */
 #endif /* (USBD_LPM_ENABLED == 1) */
   0x02,
-  0x02,                       /*bDeviceClass*/
+  0xEF,                       /*bDeviceClass*/
   0x02,                       /*bDeviceSubClass*/
-  0x00,                       /*bDeviceProtocol*/
+  0x01,                       /*bDeviceProtocol*/
   USB_MAX_EP0_SIZE,           /*bMaxPacketSize*/
   LOBYTE(USBD_VID),           /*idVendor*/
   HIBYTE(USBD_VID),           /*idVendor*/
@@ -259,6 +277,13 @@ uint8_t * USBD_FS_DeviceDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
 {
   UNUSED(speed);
   *length = sizeof(USBD_FS_DeviceDesc);
+
+  if(USBD_IsMscEnabled() == false)
+  {
+    USBD_FS_DeviceDesc[4] = 0x2;
+    USBD_FS_DeviceDesc[5] = 0x2;
+    USBD_FS_DeviceDesc[6] = 0;
+  }
   return USBD_FS_DeviceDesc;
 }
 

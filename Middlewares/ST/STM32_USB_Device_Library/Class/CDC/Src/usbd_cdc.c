@@ -270,8 +270,6 @@ static uint8_t CDCInEpAdd = CDC_IN_EP;
 static uint8_t CDCOutEpAdd = CDC_OUT_EP;
 static uint8_t CDCCmdEpAdd = CDC_CMD_EP;
 
-static bool cdc_is_opened;
-
 /**
   * @}
   */
@@ -470,16 +468,6 @@ static uint8_t USBD_CDC_Setup(USBD_HandleTypeDef *pdev,
       }
       else
       {
-        cdc_is_opened = false;
-        if (req->wValue==0x03)
-        {
-          static const char prompt[] = "\n\U00002601] ";
-
-          //PRINTSYSTEM(INFO,"Open Comms");
-          //Simulate NL
-          cdc_is_opened = true;
-          VCP_SendData(prompt, sizeof(prompt));
-        }
         ((USBD_CDC_ItfTypeDef *)pdev->pUserData[pdev->classId])->Control(req->bRequest,
                                                                          (uint8_t *)req, 0U);
       }
@@ -872,11 +860,6 @@ uint8_t USBD_CDC_ReceivePacket(USBD_HandleTypeDef *pdev)
   }
 
   return (uint8_t)USBD_OK;
-}
-
-bool USBD_CDC_IsOpened(void)
-{
-  return cdc_is_opened;
 }
 /**
   * @}
