@@ -34,6 +34,7 @@
 
 #include "drv_vcp.h"
 #include "tk_shell.h"
+#include "tmr.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -91,6 +92,7 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
   VCP_Init(); // dependent on MX_USB_DEVICE_Init()
+  tmrInit();
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */

@@ -27,7 +27,6 @@
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
 #include "usbd_storage_if.h"
-#include "usbd_cdc_msc.h"
 #include "logger.h"
 /* USER CODE END Includes */
 
@@ -44,13 +43,12 @@
 /* USB Device Core handle declaration. */
 USBD_HandleTypeDef hUsbDeviceFS;
 
-static USBD_CDC_MSC_ItfTypeDef USBD_fops_FS;
-
 /*
  * -- Insert your variables declaration here --
  */
 /* USER CODE BEGIN 0 */
-
+static const uint8_t cdcEP[] = {CDC_IN_EP, CDC_OUT_EP, CDC_CMD_EP};
+static const uint8_t mscEP[] = {MSC_EPIN_ADDR, MSC_EPOUT_ADDR};
 /* USER CODE END 0 */
 
 /*
@@ -115,18 +113,26 @@ bool usb_device_initialized(void)
 void MX_USB_DEVICE_Init(void)
 {
   /* USER CODE BEGIN USB_DEVICE_Init_PreTreatment */
-  USBD_fops_FS.cdc = USBD_Interface_fops_FS;
-  USBD_fops_FS.msc = USBD_Storage_Interface_fops_FS;
+  // USBD_fops_FS.cdc = USBD_Interface_fops_FS;
+  // USBD_fops_FS.msc = USBD_Storage_Interface_fops_FS;
 
   if (USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS) != USBD_OK)
   {
     Error_Handler();
   }
-  if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_CDC_MSC) != USBD_OK)
+  if (USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_Interface_fops_FS) != USBD_OK)
   {
     Error_Handler();
   }
-  if (USBD_CDC_MSC_RegisterInterface(&hUsbDeviceFS, &USBD_fops_FS) != USBD_OK)
+  if (USBD_RegisterClassComposite(&hUsbDeviceFS, &USBD_CDC, CLASS_TYPE_CDC, cdcEP) != USBD_OK)
+  {
+    Error_Handler();
+  }
+  if (USBD_MSC_RegisterStorage(&hUsbDeviceFS, &USBD_Storage_Interface_fops_FS) != USBD_OK)
+  {
+    Error_Handler();
+  }
+  if (USBD_RegisterClassComposite(&hUsbDeviceFS, &USBD_MSC, CLASS_TYPE_MSC, mscEP) != USBD_OK)
   {
     Error_Handler();
   }

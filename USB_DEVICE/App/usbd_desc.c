@@ -24,7 +24,7 @@
 #include "usbd_conf.h"
 
 /* USER CODE BEGIN INCLUDE */
-#include "usbd_cdc_msc.h"
+
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -278,12 +278,12 @@ uint8_t * USBD_FS_DeviceDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
   UNUSED(speed);
   *length = sizeof(USBD_FS_DeviceDesc);
 
-  if(USBD_IsMscEnabled() == false)
-  {
-    USBD_FS_DeviceDesc[4] = 0x2;
-    USBD_FS_DeviceDesc[5] = 0x2;
-    USBD_FS_DeviceDesc[6] = 0;
-  }
+  // if(USBD_IsMscEnabled() == false)
+  // {
+  //   USBD_FS_DeviceDesc[4] = 0x2;
+  //   USBD_FS_DeviceDesc[5] = 0x2;
+  //   USBD_FS_DeviceDesc[6] = 0;
+  // }
   return USBD_FS_DeviceDesc;
 }
 

@@ -18,8 +18,10 @@ typedef struct tmr_entry
   tmr_callback_fp   callback;
 } tmr_entry_s;
 
+void tmrInit(void);
 void tmrTickHandler(void);
 void tmrAdd(tmr_entry_s *pEntry);
 void tmrDelete(tmr_entry_s *pEntry);
+void tmrSwDelay_us(uint32_t delay);
 
 #endif // TMR_H

@@ -13,7 +13,7 @@
 #include "stm32f4xx.h"
 #include "fatfs.h"
 #include "usb_device.h"
-#include "usbd_cdc_msc.h"
+// #include "usbd_cdc_msc.h"
 
 TK_SHELL_METHOD(sd, test);
 
@@ -43,7 +43,7 @@ TK_SHELL_METHOD(sd, test)
   usb_device_deinit();
   HAL_Delay(3000);
 
-  USBD_MscEnable(!!on);
+  // USBD_MscEnable(!!on);
 
   usb_device_init();
 

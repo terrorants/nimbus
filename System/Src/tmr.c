@@ -1,9 +1,22 @@
 #include "tmr.h"
 #include "target.h"
 
+#define DWT_ONE_TIME_INIT
+
 uint32_t tmrBaseMs = 0;
 
 static tmr_entry_s tmrHead = {0};
+
+void tmrInit(void)
+{
+#ifdef DWT_ONE_TIME_INIT
+  /* Enable TRC */
+  CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; // 0x01000000;
+
+  /* Enable clock cycle counter */
+  DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk; //0x00000001;
+#endif // DWT_ONE_TIME_INIT
+}
 
 void tmrTickHandler(void)
 {
@@ -67,3 +80,32 @@ void tmrDelete(tmr_entry_s *pEntry)
   }
   EXIT_CRIT_SECTION;
 }
+
+void tmrSwDelay_us(uint32_t delay)
+{
+#ifndef DWT_ONE_TIME_INIT
+  /* Enable TRC */
+  CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; // 0x01000000;
+
+  /* Enable clock cycle counter */
+  DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk; //0x00000001;
+#endif // DWT_ONE_TIME_INIT
+
+  /* Reset the clock cycle counter value */
+  DWT->CYCCNT = 0;
+ 
+  /* Go to number of cycles for system */
+  delay *= (HAL_RCC_GetHCLKFreq() / 1000000);
+ 
+  /* Delay till end */
+  while ((DWT->CYCCNT) < delay);
+
+#ifndef DWT_ONE_TIME_INIT
+  /* Disable clock cycle counter */
+  DWT->CTRL &= ~DWT_CTRL_CYCCNTENA_Msk; //~0x00000001;
+
+  /* Disable TRC */
+  CoreDebug->DEMCR &= ~CoreDebug_DEMCR_TRCENA_Msk; // ~0x01000000;
+#endif // DWT_ONE_TIME_INIT
+}
+

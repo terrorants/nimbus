@@ -6,7 +6,7 @@
  */
 #include "drv_vcp.h"
 #include "cbuf.h"
-#include "usbd_cdc_msc.h"
+#include "usbd_cdc_if.h"
 #include "events.h"
 
 #define DRV_VCP_TX_BUF_SIZE 2048
