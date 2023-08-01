@@ -180,7 +180,7 @@ int8_t STORAGE_Init_FS(uint8_t lun)
   /* USER CODE BEGIN 2 */
  UNUSED(lun);
 
- LOG(STOR, DEBUG, "%s, %d\n", __FUNCTION__, lun);
+ // LOG(STOR, DEBUG, "%s, %d\n", __FUNCTION__, lun);
 
   return (USBD_OK);
   /* USER CODE END 2 */
@@ -196,9 +196,11 @@ int8_t STORAGE_Init_FS(uint8_t lun)
 int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
 {
   /* USER CODE BEGIN 3 */
-  // *block_num  = STORAGE_BLK_NBR;
-  // *block_size = STORAGE_BLK_SIZ;
-  // return (-1);
+#if 0
+  *block_num  = STORAGE_BLK_NBR;
+  *block_size = STORAGE_BLK_SIZ;
+  return (-1);
+#else
   HAL_SD_CardInfoTypeDef info;
   int8_t ret = -1;
 
@@ -207,8 +209,9 @@ int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_
   *block_num =  info.LogBlockNbr  - 1;
   *block_size = info.LogBlockSize;
 
-  LOG(STOR, DEBUG, "%s: %d\n", __FUNCTION__, ret);
+  // LOG(STOR, DEBUG, "%s: %d\n", __FUNCTION__, ret);
   return ret;
+#endif
   /* USER CODE END 3 */
 }
 
@@ -222,7 +225,7 @@ int8_t STORAGE_IsReady_FS(uint8_t lun)
   /* USER CODE BEGIN 4 */
   UNUSED(lun);
 
-  LOG(STOR, DEBUG, "%s: %d\n", __FUNCTION__, lun);
+  // LOG(STOR, DEBUG, "%s: %d\n", __FUNCTION__, lun);
 
   return (USBD_OK);
   /* USER CODE END 4 */
@@ -238,7 +241,7 @@ int8_t STORAGE_IsWriteProtected_FS(uint8_t lun)
   /* USER CODE BEGIN 5 */
   UNUSED(lun);
 
-  LOG(STOR, DEBUG, "%s: %d\n", __FUNCTION__, lun);
+  // LOG(STOR, DEBUG, "%s: %d\n", __FUNCTION__, lun);
 
   return (USBD_OK);
   /* USER CODE END 5 */
@@ -255,20 +258,24 @@ int8_t STORAGE_IsWriteProtected_FS(uint8_t lun)
 int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 6 */
-  // return -1;
+#if 0
+  return -1;
+#else
+  uint32_t timeout = HAL_MAX_DELAY;
 
   int8_t ret = -1;
 
   ret = HAL_SD_ReadBlocks(&hsd, buf, blk_addr, blk_len, HAL_MAX_DELAY);
 
-  LOG(STOR, DEBUG, "%s: %d\n", __FUNCTION__, ret);
+  // LOG(STOR, DEBUG, "%s: %d\n", __FUNCTION__, ret);
 
   /* Wait until SD card is ready to use for new operation */
-  while (HAL_SD_GetCardState(&hsd) != HAL_SD_CARD_TRANSFER){}
+  while (HAL_SD_GetCardState(&hsd) != HAL_SD_CARD_TRANSFER && timeout--){}
 
-  LOG(STOR, DEBUG, "%s: exit\n", __FUNCTION__);
+  // LOG(STOR, DEBUG, "%s: exit\n", __FUNCTION__);
 
   return ret;
+#endif
   /* USER CODE END 6 */
 }
 
@@ -283,19 +290,24 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 7 */
-  // return -1;
+#if 0
+  return -1;
+#else
+  uint32_t timeout = HAL_MAX_DELAY;
+
   int8_t ret = -1;
 
   ret = HAL_SD_WriteBlocks(&hsd, buf, blk_addr, blk_len, HAL_MAX_DELAY);
 
-  LOG(STOR, DEBUG, "%s: %d\n", __FUNCTION__, ret);
+  // LOG(STOR, DEBUG, "%s: %d\n", __FUNCTION__, ret);
 
   /* Wait until SD card is ready to use for new operation */
-  while (HAL_SD_GetCardState(&hsd) != HAL_SD_CARD_TRANSFER){}
+  while (HAL_SD_GetCardState(&hsd) != HAL_SD_CARD_TRANSFER && timeout--){}
 
-  LOG(STOR, DEBUG, "%s: exit\n", __FUNCTION__);
+  // LOG(STOR, DEBUG, "%s: exit\n", __FUNCTION__);
 
   return ret;
+#endif
   /* USER CODE END 7 */
 }
 
@@ -307,7 +319,7 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 int8_t STORAGE_GetMaxLun_FS(void)
 {
   /* USER CODE BEGIN 8 */
-  LOG(STOR, DEBUG, "%s\n", __FUNCTION__);
+  // LOG(STOR, DEBUG, "%s\n", __FUNCTION__);
 
   return (STORAGE_LUN_NBR - 1);
   /* USER CODE END 8 */
