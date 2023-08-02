@@ -108,6 +108,7 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   TkShellInit();
+  usb_device_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */

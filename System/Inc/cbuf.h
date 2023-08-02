@@ -20,6 +20,8 @@ typedef struct
   uint8_t  *pData; /**< buffer address */
 } cbufHandle_t;
 
+#define cbufGetPointer(handle, idx)    (&((handle)->pData[idx]))
+
 /**
  * @brief Initialize buffer handle.
  *

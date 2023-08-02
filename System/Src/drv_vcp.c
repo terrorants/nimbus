@@ -8,6 +8,9 @@
 #include "cbuf.h"
 #include "usbd_cdc_if.h"
 #include "events.h"
+#include "usart.h"
+#include "logger.h"
+#include "tmr.h"
 
 #define DRV_VCP_TX_BUF_SIZE 2048
 #define DRV_VCP_RX_BUF_SIZE 2048
@@ -67,26 +70,35 @@ void VCP_Flush(void)
 {
   uint16_t txLen = cbufBytesToRead(&txBufHandle);
   uint16_t bytesToEnd = txBufHandle.bufSz - txBufHandle.rdIdx;
+  uint32_t start = tmrNow();
 
-  if (USBD_CDC_IsOpened() == false)
+  if (txLen == 0)
   {
-    return; // check back later
+    return; // nothing to flush
   }
+
+  while ((huart3.gState != HAL_UART_STATE_READY) && (CDC_IsBusy() && tmrElapsedMs(start) < 3000));
 
   if (txLen > bytesToEnd)
   {
     // wrap around necessary
-    if (CDC_Transmit_FS(&txBufHandle.pData[txBufHandle.rdIdx], txBufHandle.bufSz - txBufHandle.rdIdx) == USBD_OK)
+    HAL_UART_Transmit_DMA(&huart3, cbufGetPointer(&txBufHandle, txBufHandle.rdIdx), txBufHandle.bufSz - txBufHandle.rdIdx);
+    if (USBD_CDC_IsOpened())
     {
-      txBufHandle.rdIdx = 0;
-      // Send the rest after this TX completes
+      CDC_Transmit_FS(cbufGetPointer(&txBufHandle, txBufHandle.rdIdx), txBufHandle.bufSz - txBufHandle.rdIdx);
     }
+
+    txBufHandle.rdIdx = 0;
+    // Send the rest after this TX completes
   }
   else
   {
-    if (CDC_Transmit_FS(&txBufHandle.pData[txBufHandle.rdIdx], txLen) == USBD_OK)
+    HAL_UART_Transmit_DMA(&huart3, cbufGetPointer(&txBufHandle, txBufHandle.rdIdx), txLen);
+    if (USBD_CDC_IsOpened())
     {
-      txBufHandle.rdIdx += txLen;
+      CDC_Transmit_FS(cbufGetPointer(&txBufHandle, txBufHandle.rdIdx), txLen);
     }
+    
+    txBufHandle.rdIdx += txLen;
   }
 }
