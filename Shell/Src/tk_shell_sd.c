@@ -15,14 +15,14 @@
 #include "usb_device.h"
 // #include "usbd_cdc_msc.h"
 
-TK_SHELL_METHOD(sd, test);
+TK_SHELL_METHOD(sd, usb);
 
-TK_SHELL_METHOD(sd, test)
+TK_SHELL_METHOD(sd, usb)
 {
-  int i = 0;
-  uint32_t on;
+  // int i = 0;
+  // uint32_t on;
 
-  if (argc != 1)
+  if (argc != 0)
   {
     PRINTF("Invalid number of arguments!\n");
     return -1;
@@ -33,7 +33,7 @@ TK_SHELL_METHOD(sd, test)
   // FIL fil;         //File handle
   // FRESULT fres; //Result after operations
 
-  on = atoi(argv[i++]);
+  // on = atoi(argv[i++]);
   //Open the file system
   //fres = f_mount(&FatFs, "", 1); //1=mount now
   //if (fres != FR_OK)
@@ -43,13 +43,13 @@ TK_SHELL_METHOD(sd, test)
   usb_device_deinit();
   HAL_Delay(3000);
 
-  // USBD_MscEnable(!!on);
+  usb_device_enable_msc(true);
 
   usb_device_init();
 
   HAL_Delay(3000);
 
-  MX_FATFS_Init();
+  // MX_FATFS_Init();
 
     // port = *(argv[i++]);
     // pin = atoi(argv[i++]);
@@ -57,12 +57,12 @@ TK_SHELL_METHOD(sd, test)
 
     // HAL_GPIO_WritePin(getPortFromChar(port), 1 << pin, state);
 
-    // PRINTF("> gpio:ok %d\n", HAL_GPIO_ReadPin(getPortFromChar(port), 1 << pin));
-    return 0;
+  PRINTF("> sd:ok\n");
+  return 0;
 }
 
 TK_SHELL_VERBS(sd) =
 {
-    TK_SHELL_VERB(sd, test, "SD test command"),
+    TK_SHELL_VERB(sd, usb, "SD mount to USB"),
     { "", NULL, "" }
 };

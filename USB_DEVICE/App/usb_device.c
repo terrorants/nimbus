@@ -47,8 +47,10 @@ USBD_HandleTypeDef hUsbDeviceFS;
  * -- Insert your variables declaration here --
  */
 /* USER CODE BEGIN 0 */
+#ifdef USE_USBD_COMPOSITE
 static const uint8_t cdcEP[] = {CDC_IN_EP, CDC_OUT_EP, CDC_CMD_EP};
 static const uint8_t mscEP[] = {MSC_EPIN_ADDR, MSC_EPOUT_ADDR};
+#endif
 /* USER CODE END 0 */
 
 /*
@@ -62,6 +64,7 @@ typedef struct
 } usb_device_status_t;
 
 usb_device_status_t usbStatus = {false, false};
+static bool mscIsEnabled = false;
 
 void usb_device_init(void)
 {
@@ -104,6 +107,16 @@ bool usb_device_initialized(void)
 {
   return usbStatus.initialized;
 }
+
+void usb_device_enable_msc(bool msc)
+{
+  mscIsEnabled = msc;
+}
+
+bool usb_device_msc_is_enabled(void)
+{
+  return mscIsEnabled;
+}
 /* USER CODE END 1 */
 
 /**
@@ -116,20 +129,48 @@ void MX_USB_DEVICE_Init(void)
   // USBD_fops_FS.cdc = USBD_Interface_fops_FS;
   // USBD_fops_FS.msc = USBD_Storage_Interface_fops_FS;
 
+#ifndef USE_USBD_COMPOSITE
   if (USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS) != USBD_OK)
   {
     Error_Handler();
   }
-  // if (USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_Interface_fops_FS) != USBD_OK)
-  // {
-  //   Error_Handler();
-  // }
-  // if (USBD_RegisterClassComposite(&hUsbDeviceFS, &USBD_CDC, CLASS_TYPE_CDC, cdcEP) != USBD_OK)
-  // {
-  //   Error_Handler();
-  // }
 
-  if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_MSC) != USBD_OK)
+  if (usb_device_msc_is_enabled())
+  {
+    if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_MSC) != USBD_OK)
+    {
+      Error_Handler();
+    }
+    if (USBD_MSC_RegisterStorage(&hUsbDeviceFS, &USBD_Storage_Interface_fops_FS) != USBD_OK)
+    {
+      Error_Handler();
+    }
+  }
+  else
+  {
+    if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_CDC) != USBD_OK)
+    {
+      Error_Handler();
+    }
+    if (USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_Interface_fops_FS) != USBD_OK)
+    {
+      Error_Handler();
+    }
+  }
+  if (USBD_Start(&hUsbDeviceFS) != USBD_OK)
+  {
+    Error_Handler();
+  }
+#else
+    if (USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS) != USBD_OK)
+  {
+    Error_Handler();
+  }
+  if (USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_Interface_fops_FS) != USBD_OK)
+  {
+    Error_Handler();
+  }
+  if (USBD_RegisterClassComposite(&hUsbDeviceFS, &USBD_CDC, CLASS_TYPE_CDC, cdcEP) != USBD_OK)
   {
     Error_Handler();
   }
@@ -137,14 +178,15 @@ void MX_USB_DEVICE_Init(void)
   {
     Error_Handler();
   }
-  // if (USBD_RegisterClassComposite(&hUsbDeviceFS, &USBD_MSC, CLASS_TYPE_MSC, mscEP) != USBD_OK)
-  // {
-  //   Error_Handler();
-  // }
+  if (USBD_RegisterClassComposite(&hUsbDeviceFS, &USBD_MSC, CLASS_TYPE_MSC, mscEP) != USBD_OK)
+  {
+    Error_Handler();
+  }
   if (USBD_Start(&hUsbDeviceFS) != USBD_OK)
   {
     Error_Handler();
   }
+#endif // USE_USBD_COMPOSITE
   #if 0
   /* USER CODE END USB_DEVICE_Init_PreTreatment */
 

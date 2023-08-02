@@ -86,6 +86,8 @@ void usb_device_deinit(void);
 void usb_device_connection_set_status(bool status);
 bool usb_device_connection_get_status(void);
 bool usb_device_initialized(void);
+void usb_device_enable_msc(bool msc);
+bool usb_device_msc_is_enabled(void);
 /* USER CODE END FD */
 /**
   * @}
