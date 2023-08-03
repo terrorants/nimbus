@@ -297,12 +297,18 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 
   int8_t ret = -1;
 
-  ret = HAL_SD_WriteBlocks(&hsd, buf, blk_addr, blk_len, HAL_MAX_DELAY);
-
-  // LOG(STOR, DEBUG, "%s: %d\n", __FUNCTION__, ret);
-
   /* Wait until SD card is ready to use for new operation */
+  // while (hsd.State != HAL_SD_STATE_READY && timeout--);
   while (HAL_SD_GetCardState(&hsd) != HAL_SD_CARD_TRANSFER && timeout--){}
+
+  ret = HAL_SD_WriteBlocks_DMA(&hsd, buf, blk_addr, blk_len);
+
+  if ((blk_addr % 0x100) == 0)
+  {
+    LOG(STOR, DEBUG, "%s[%d] addr 0x%08X, blocks %d", __FUNCTION__, ret, blk_addr, blk_len);
+  }
+
+
 
   // LOG(STOR, DEBUG, "%s: exit\n", __FUNCTION__);
 

@@ -7,6 +7,7 @@ extern uint32_t tmrBaseMs;
 
 #define tmrNow()              (tmrBaseMs)
 #define tmrElapsedMs(then)    (tmrNow() - then)
+#define tmrDelay_ms(ms)       HAL_Delay(ms)
 
 typedef uint32_t (*tmr_callback_fp)(void *arg);
 

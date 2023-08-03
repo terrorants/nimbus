@@ -15,6 +15,7 @@
 #include "tk_shell.h"
 #include "tk_shell_gpio.h"
 #include "tk_shell_sd.h"
+#include "tk_shell_i2c.h"
 
 //static const uint32_t reg_lookup[] =
 //{
@@ -92,6 +93,7 @@
 static const tk_shell_command_s commands[] =
 {
     TK_SHELL_COMMAND(gpio, "GPIO commands"),
+    TK_SHELL_COMMAND(i2c, "I2C commands"),
     TK_SHELL_COMMAND(sd, "SD Card commands"),
 //    TK_SHELL_COMMAND(wm, "Wolfson Codec commands"),
 //    TK_SHELL_COMMAND(pcm, "Burr-Brown Codec commands"),

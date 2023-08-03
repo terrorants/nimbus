@@ -108,4 +108,3 @@ void tmrSwDelay_us(uint32_t delay)
   CoreDebug->DEMCR &= ~CoreDebug_DEMCR_TRCENA_Msk; // ~0x01000000;
 #endif // DWT_ONE_TIME_INIT
 }
-
