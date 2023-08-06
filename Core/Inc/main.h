@@ -69,10 +69,20 @@ void Error_Handler(void);
 #define BTN_DOWN_GPIO_Port GPIOC
 #define BTN_LEFT_Pin GPIO_PIN_5
 #define BTN_LEFT_GPIO_Port GPIOC
+#define SPARE_GPIO5_Pin GPIO_PIN_7
+#define SPARE_GPIO5_GPIO_Port GPIOC
 #define BTN_CANCEL_Pin GPIO_PIN_10
 #define BTN_CANCEL_GPIO_Port GPIOA
+#define SPI1_DC_Pin GPIO_PIN_3
+#define SPI1_DC_GPIO_Port GPIOB
+#define SSD1351_RST_Pin GPIO_PIN_4
+#define SSD1351_RST_GPIO_Port GPIOB
+#define SSD1351_CS_Pin GPIO_PIN_5
+#define SSD1351_CS_GPIO_Port GPIOB
 #define SD_DETECT_Pin GPIO_PIN_8
 #define SD_DETECT_GPIO_Port GPIOB
+#define SPARE_GPIO4_Pin GPIO_PIN_9
+#define SPARE_GPIO4_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
