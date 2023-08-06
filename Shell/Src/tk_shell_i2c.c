@@ -32,12 +32,10 @@ TK_SHELL_METHOD(i2c, scan)
   }
 
   addrs_count = 0;
-  // ft_i2c_configure(i2c_bus);
+
   for (int addr = 2; addr < 256; addr += 2)
   {
     status = HAL_I2C_Master_Transmit(&hi2c1, addr, data, I2C_MEMADD_SIZE_8BIT, FT_I2C_TIMEOUT);
-
-    PRINTF("addr 0x%X status %d\n", addr, status);
 
     if (status == HAL_OK)
     {

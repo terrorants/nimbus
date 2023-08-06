@@ -29,15 +29,20 @@ void VCP_Init(void)
   cbufInit(&rxBufHandle, rxBuf, DRV_VCP_RX_BUF_SIZE);
 }
 
-void VCP_SendData(const char *buf, uint16_t len)
+void VCP_SendData(char *buf, uint16_t len)
 {
+  uint16_t spaceAvailable;
+
   while (len > cbufSpaceAvailable(&txBufHandle))
   {
-    cbufWriteBlock(&txBufHandle, (uint8_t *)buf, cbufSpaceAvailable(&txBufHandle));
-    VCP_Flush();
+    spaceAvailable = cbufSpaceAvailable(&txBufHandle);
+    cbufWriteBlock(&txBufHandle, (uint8_t *)buf, spaceAvailable);
 
-    buf += cbufSpaceAvailable(&txBufHandle);
-    len -= cbufSpaceAvailable(&txBufHandle);
+    VCP_Flush();
+    VCP_Flush(); // 2nd call to make sure 1st one is done.
+
+    buf += spaceAvailable;
+    len -= spaceAvailable;
   }
 
   if (len > 0)
