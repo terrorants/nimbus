@@ -65,6 +65,8 @@ void Error_Handler(void);
 #define BTN_UP_GPIO_Port GPIOC
 #define BTN_RIGHT_Pin GPIO_PIN_3
 #define BTN_RIGHT_GPIO_Port GPIOC
+#define SSD1351_CS_Pin GPIO_PIN_4
+#define SSD1351_CS_GPIO_Port GPIOA
 #define BTN_DOWN_Pin GPIO_PIN_4
 #define BTN_DOWN_GPIO_Port GPIOC
 #define BTN_LEFT_Pin GPIO_PIN_5
@@ -75,8 +77,6 @@ void Error_Handler(void);
 #define SPARE_GPIO5_GPIO_Port GPIOC
 #define BTN_CANCEL_Pin GPIO_PIN_10
 #define BTN_CANCEL_GPIO_Port GPIOA
-#define SSD1351_CS_Pin GPIO_PIN_5
-#define SSD1351_CS_GPIO_Port GPIOB
 #define SD_DETECT_Pin GPIO_PIN_8
 #define SD_DETECT_GPIO_Port GPIOB
 #define SSD1351_RES_Pin GPIO_PIN_9
