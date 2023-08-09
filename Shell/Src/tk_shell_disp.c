@@ -26,9 +26,16 @@ TK_SHELL_METHOD(disp, init)
     return -1;
   }
 
+  PRINTF("Unselecting SSD1351\n");
   SSD1351_Unselect();
+  HAL_Delay(200);
+
+  PRINTF("Initializing SSD1351\n");
   SSD1351_Init();
 
+  HAL_Delay(300);
+
+  PRINTF("Drawing image\n");
   SSD1351_DrawImage(0, 0, 128, 128, (const uint16_t*)test_img_128x128);
 
   PRINTF("> disp:ok\n");
