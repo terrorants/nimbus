@@ -13,7 +13,7 @@
 #include "stm32f4xx.h"
 #include "fatfs.h"
 #include "usb_device.h"
-// #include "usbd_cdc_msc.h"
+#include "ssd1351.h"
 
 TK_SHELL_METHOD(sd, usb);
 

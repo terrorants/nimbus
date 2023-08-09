@@ -4,17 +4,20 @@
 
 #include "fonts.h"
 #include <stdbool.h>
+#include "main.h"
+#include "spi.h"
 
 /*** Redefine if necessary ***/
 #define SSD1351_SPI_PORT hspi1
-extern SPI_HandleTypeDef SSD1351_SPI_PORT;
+// extern SPI_HandleTypeDef SSD1351_SPI_PORT;
 
-#define SSD1351_RES_Pin       GPIO_PIN_0
-#define SSD1351_RES_GPIO_Port GPIOB
-#define SSD1351_CS_Pin        GPIO_PIN_0
-#define SSD1351_CS_GPIO_Port  GPIOC
-#define SSD1351_DC_Pin        GPIO_PIN_1
-#define SSD1351_DC_GPIO_Port  GPIOC
+// defined in main.h
+// #define SSD1351_RES_Pin       SSD1351_RST_Pin
+// #define SSD1351_RES_GPIO_Port SSD1351_RST_GPIO_Port
+// #define SSD1351_CS_Pin        GPIO_PIN_5
+// #define SSD1351_CS_GPIO_Port  GPIOB
+// #define SSD1351_DC_Pin        SPARE_GPIO5_Pin//SPI1_DC_Pin
+// #define SSD1351_DC_GPIO_Port  SPARE_GPIO5_GPIO_Port//SPI1_DC_GPIO_Port
 
 // default orientation
 #define SSD1351_WIDTH  128

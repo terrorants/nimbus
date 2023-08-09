@@ -32,7 +32,7 @@
   or concerns with licensing, please contact techsupport@sparkfun.com.
   Distributed as-is; no warranty is given.
 ******************************************************************************/
-
+#if 0
 #include "wm8960.h"
 
 WM8960::WM8960() {
@@ -1511,3 +1511,4 @@ uint8_t WM8960::convertDBtoSetting(float dB, float offset, float stepSize, float
 
   return (uint8_t)volume; // cast from float to unsigned 8-bit integer.
 }
+#endif

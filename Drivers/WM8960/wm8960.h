@@ -32,7 +32,7 @@
   or concerns with licensing, please contact techsupport@sparkfun.com.
   Distributed as-is; no warranty is given.
 ******************************************************************************/
-
+#if 0
 #ifndef __SPARKFUN_WM8960_H__
 #define __SPARKFUN_WM8960_H__
 
@@ -931,4 +931,5 @@ class WM8960
       0x00e9, // R55 (0x37)
     };    
 };
+#endif
 #endif
