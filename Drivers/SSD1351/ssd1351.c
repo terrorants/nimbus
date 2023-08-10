@@ -1,27 +1,68 @@
 /* vim: set ai et ts=4 sw=4: */
 #include "stm32f4xx_hal.h"
 #include "ssd1351.h"
+#include "tmr.h"
+#include "logger.h"
 
-static void SSD1351_Select() {
-    HAL_GPIO_WritePin(SSD1351_CS_GPIO_Port, SSD1351_CS_Pin, GPIO_PIN_RESET);
+typedef struct __attribute__((packed))
+{
+  uint8_t command;
+  uint8_t data_len;
+  uint8_t data[3];
+} ssd1351_recipe_step_s;
+
+// command list is based on https://github.com/adafruit/Adafruit-SSD1351-library
+static const ssd1351_recipe_step_s initRecipe[] = 
+{
+  { 0xFD, 1, { 0x12 }},         // COMMANDLOCK
+  { 0xFD, 1, { 0xB1 }},         // COMMANDLOCK
+  { 0xAE, 0, NULL },            // DISPLAYOFF
+  { 0xAF, 0, NULL }, // DISPLAYON
+  { 0xB3, 0, NULL },            // CLOCKDIV
+  { 0xF1, 0, NULL },            // 7:4 = Oscillator Frequency, 3:0 = CLK Div Ratio (A[3:0]+1 = 1..16)
+  { 0xCA, 1, { 0x7F }},         // MUXRATIO: 127
+  { 0xA0, 1, { 0x74 }},         // SETREMAP
+  { 0x15, 2, { 0x00, 0x7F }},   // SETCOLUMN
+  { 0x75, 2, { 0x00, 0x7F }},   // SETROW
+  { 0xA1, 1, { 0x00 }},         // STARTLINE: 96 if display height == 96
+  { 0xA2, 1, { 0x00 }},         // DISPLAYOFFSET
+  { 0xB5, 1, { 0x00 }},         // SETGPIO
+  { 0xAB, 1, { 0x01 }},         // FUNCTIONSELECT
+  { 0xB1, 1, { 0x33 }},         // PRECHARGE
+  { 0xBE, 1, { 0x05 }},         // VCOMH
+  { 0xA6, 0, NULL },            // NORMALDISPLAY (don't invert)
+  { 0xC1, 3, { 0xC8, 0x80, 0xC8 }}, // CONTRASTABC
+  { 0xC7, 1, { 0x0F }},         // CONTRASTMASTER
+  { 0xB4, 3, { 0xA0, 0xB5, 0x55 }}, // SETVSL
+  { 0xB6, 1, { 0x01 }},         // PRECHARGE2
+  // { 0xAF, 0, NULL }, // DISPLAYON
+  { 0x00, 0, NULL },
+};
+
+static void SSD1351_Select()
+{
+  HAL_GPIO_WritePin(SSD1351_CS_GPIO_Port, SSD1351_CS_Pin, GPIO_PIN_RESET);
 }
 
-void SSD1351_Unselect() {
-    HAL_GPIO_WritePin(SSD1351_CS_GPIO_Port, SSD1351_CS_Pin, GPIO_PIN_SET);
+void SSD1351_Unselect()
+{
+  HAL_GPIO_WritePin(SSD1351_CS_GPIO_Port, SSD1351_CS_Pin, GPIO_PIN_SET);
 }
 
-static void SSD1351_Reset() {
-    HAL_GPIO_WritePin(SSD1351_RES_GPIO_Port, SSD1351_RES_Pin, GPIO_PIN_SET);
-    HAL_Delay(500);
-    HAL_GPIO_WritePin(SSD1351_RES_GPIO_Port, SSD1351_RES_Pin, GPIO_PIN_RESET);
-    HAL_Delay(500);
-    HAL_GPIO_WritePin(SSD1351_RES_GPIO_Port, SSD1351_RES_Pin, GPIO_PIN_SET);
-    HAL_Delay(500);
+static void SSD1351_Reset()
+{
+  HAL_GPIO_WritePin(SSD1351_RES_GPIO_Port, SSD1351_RES_Pin, GPIO_PIN_SET);
+  HAL_Delay(500);
+  HAL_GPIO_WritePin(SSD1351_RES_GPIO_Port, SSD1351_RES_Pin, GPIO_PIN_RESET);
+  HAL_Delay(500);
+  HAL_GPIO_WritePin(SSD1351_RES_GPIO_Port, SSD1351_RES_Pin, GPIO_PIN_SET);
+  HAL_Delay(500);
 }
 
-static void SSD1351_WriteCommand(uint8_t cmd) {
-    HAL_GPIO_WritePin(SSD1351_DC_GPIO_Port, SSD1351_DC_Pin, GPIO_PIN_RESET);
-    HAL_SPI_Transmit(&SSD1351_SPI_PORT, &cmd, sizeof(cmd), HAL_MAX_DELAY);
+static void SSD1351_WriteCommand(uint8_t cmd) 
+{
+  HAL_GPIO_WritePin(SSD1351_DC_GPIO_Port, SSD1351_DC_Pin, GPIO_PIN_RESET);
+  HAL_SPI_Transmit(&SSD1351_SPI_PORT, &cmd, sizeof(cmd), HAL_MAX_DELAY);
 }
 
 static void SSD1351_WriteData(uint8_t* buff, size_t buff_size) {
@@ -55,12 +96,13 @@ static void SSD1351_SetAddressWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint
     SSD1351_WriteCommand(0x5C); // WRITERAM
 }
 
-void SSD1351_Init() {
-    SSD1351_Select();
-    SSD1351_Reset();
+void SSD1351_Init(void)
+{
+  SSD1351_Select();
+  SSD1351_Reset();
 
+#if 0
     // command list is based on https://github.com/adafruit/Adafruit-SSD1351-library
-
     SSD1351_WriteCommand(0xFD); // COMMANDLOCK
     {
         uint8_t data[] = { 0x12 };
@@ -146,8 +188,23 @@ void SSD1351_Init() {
         SSD1351_WriteData(data, sizeof(data));
     }
     SSD1351_WriteCommand(0xAF); // DISPLAYON
+#else
+  int i = 0;
 
-    SSD1351_Unselect();
+  while (initRecipe[i].command != 0x00)
+  {
+    SSD1351_WriteCommand(initRecipe[i].command);
+    if (initRecipe[i].data_len > 0)
+    {
+      SSD1351_WriteData(initRecipe[i].data, initRecipe[i].data_len);
+    }
+    LOG(OLED, INFO, "[%02d]: cmd 0x%02X, {%d}[ 0x%02X, 0x%02X, 0x%02X ]", i, initRecipe[i].command, initRecipe[i].data_len, initRecipe[i].data[0], initRecipe[i].data[1], initRecipe[i].data[2]);
+    i++;
+    tmrDelay_ms(1000);
+    VCP_Flush();
+  }
+#endif
+  SSD1351_Unselect();
 }
 
 void SSD1351_DrawPixel(uint16_t x, uint16_t y, uint16_t color) {

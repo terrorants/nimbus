@@ -20,23 +20,39 @@ TK_SHELL_METHOD(disp, init);
 
 TK_SHELL_METHOD(disp, init)
 {
-  if (argc != 0)
+  int i = 0;
+  int stage;
+
+  if (argc != 1)
   {
     PRINTF("Invalid number of arguments!\n");
     return -1;
   }
 
-  PRINTF("Unselecting SSD1351\n");
-  SSD1351_Unselect();
-  HAL_Delay(200);
+  stage = atoi(argv[i]);
 
-  PRINTF("Initializing SSD1351\n");
-  SSD1351_Init();
+  switch (stage)
+  {
+  case 0:
+    PRINTF("Unselecting SSD1351\n");
+    SSD1351_Unselect();
+    // HAL_Delay(200);
+    break;
 
-  HAL_Delay(300);
+  case 1:
+    PRINTF("Initializing SSD1351\n");
+    SSD1351_Init();
+    // HAL_Delay(300);
+    break;
 
-  PRINTF("Drawing image\n");
-  SSD1351_DrawImage(0, 0, 128, 128, (const uint16_t*)test_img_128x128);
+  case 2:
+    PRINTF("Drawing image\n");
+    SSD1351_DrawImage(0, 0, 128, 128, (const uint16_t*)test_img_128x128);    
+    break;
+
+  default:
+    break;
+  }
 
   PRINTF("> disp:ok\n");
   return 0;

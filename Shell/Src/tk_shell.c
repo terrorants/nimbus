@@ -17,6 +17,7 @@
 #include "tk_shell_sd.h"
 #include "tk_shell_i2c.h"
 #include "tk_shell_disp.h"
+#include "tk_shell_sys.h"
 
 //static const uint32_t reg_lookup[] =
 //{
@@ -93,6 +94,7 @@
 
 static const tk_shell_command_s commands[] =
 {
+    TK_SHELL_COMMAND(sys, "System commands"),
     TK_SHELL_COMMAND(gpio, "GPIO commands"),
     TK_SHELL_COMMAND(i2c, "I2C commands"),
     TK_SHELL_COMMAND(sd, "SD Card commands"),
@@ -402,7 +404,7 @@ static int TkShellProcessCommand(void)
                     if (strcicmp(argv[1], commands[i].verbs[j].name) == 0)
                     {
                         argc--;
-                        retval = commands[i].verbs[j].func(argc, argv);
+                        retval = commands[i].verbs[j].func(argc, &argv[2]);
                         found = true;
                         break;
                     }
