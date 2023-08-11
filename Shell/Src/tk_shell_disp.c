@@ -15,8 +15,7 @@
 #include "usb_device.h"
 #include "ssd1351.h"
 #include "testimg.h"
-
-TK_SHELL_METHOD(disp, init);
+#include "oled_manager.h"
 
 TK_SHELL_METHOD(disp, init)
 {
@@ -34,20 +33,13 @@ TK_SHELL_METHOD(disp, init)
   switch (stage)
   {
   case 0:
-    PRINTF("Unselecting SSD1351\n");
-    SSD1351_Unselect();
-    // HAL_Delay(200);
+    PRINTF("Initializing SSD1351\n");
+    SSD1351_Init();
     break;
 
   case 1:
-    PRINTF("Initializing SSD1351\n");
-    SSD1351_Init();
-    // HAL_Delay(300);
-    break;
-
-  case 2:
     PRINTF("Drawing image\n");
-    SSD1351_DrawImage(0, 0, 128, 128, (const uint16_t*)test_img_128x128);    
+    SSD1351_DrawImage(0, 0, 128, 128, (const uint16_t*)test_img_128x128);
     break;
 
   default:
@@ -58,8 +50,61 @@ TK_SHELL_METHOD(disp, init)
   return 0;
 }
 
+TK_SHELL_METHOD(disp, cmd)
+{
+  int i = 0;
+  uint8_t cmd;
+
+  if (argc != 1)
+  {
+    PRINTF("Invalid number of arguments!\n");
+    return -1;
+  }
+
+  cmd = strtol(argv[i++], NULL, 16);
+
+  SSD1351_Command(cmd);
+  PRINTF("> disp:ok 0x%02X\n", cmd);
+
+  return 0;
+}
+
+TK_SHELL_METHOD(disp, on)
+{
+  if (argc != 0)
+  {
+    PRINTF("Invalid number of arguments!\n");
+    return -1;
+  }
+
+  SSD1351_DisplayOn(true);
+  OLED_KickInactivityTimer();
+
+  PRINTF("> disp:ok\n");
+
+  return 0;
+}
+
+TK_SHELL_METHOD(disp, off)
+{
+  if (argc != 0)
+  {
+    PRINTF("Invalid number of arguments!\n");
+    return -1;
+  }
+
+  SSD1351_DisplayOn(false);
+
+  PRINTF("> disp:ok\n");
+
+  return 0;
+}
+
 TK_SHELL_VERBS(disp) =
 {
-    TK_SHELL_VERB(disp, init, "initialize display"),
-    { "", NULL, "" }
+  TK_SHELL_VERB(disp, init, "initialize display"),
+  TK_SHELL_VERB(disp, on, "turn on display"),
+  TK_SHELL_VERB(disp, off, "turn off display"),
+  TK_SHELL_VERB(disp, cmd, "send command"),
+  { "", NULL, "" }
 };
