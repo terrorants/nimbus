@@ -2,10 +2,12 @@
 #define LOGGER_H
 
 #include <string.h>
+#include <stdint.h>
 
 typedef enum
 {
   LOGGER_MODULE_APP,
+  LOGGER_MODULE_FLSH,
   LOGGER_MODULE_USB,
   LOGGER_MODULE_LOG,
   LOGGER_MODULE_STOR,
@@ -25,6 +27,8 @@ typedef enum
 
 #define LOG(module, level, ...)   loggerPrint(LOGGER_MODULE_##module, LOGGER_LEVEL_##level, __VA_ARGS__)
 #define PRINTF(...)               loggerPrintf(__VA_ARGS__)
+
+extern uint8_t logger_levels[LOGGER_MODULE_MAX];
 
 void loggerInit(void);
 

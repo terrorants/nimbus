@@ -44,6 +44,7 @@ void SSD1351_DisplayOn(bool on);
 bool SSD1351_IsDisplayOn(void);
 void SSD1351_Command(uint8_t cmd);
 void SSD1351_DrawPixel(uint16_t x, uint16_t y, uint16_t color);
+void SSD1351_DrawRectangle(uint16_t x1, uint16_t y1, uint8_t x2, uint8_t y2, uint16_t *pcolor);
 void SSD1351_WriteString(uint16_t x, uint16_t y, const char* str, FontDef font, uint16_t color, uint16_t bgcolor);
 void SSD1351_FillRectangle(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color);
 void SSD1351_FillScreen(uint16_t color);

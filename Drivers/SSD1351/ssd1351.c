@@ -54,14 +54,14 @@ static void SSD1351_Reset()
 
 static void SSD1351_WriteCommand(uint8_t cmd) 
 {
-  LOG(OLED, DEBUG, "C: %02X", cmd);
+  // LOG(OLED, DEBUG, "C: %02X", cmd);
   HAL_GPIO_WritePin(SSD1351_DC_GPIO_Port, SSD1351_DC_Pin, GPIO_PIN_RESET);
   HAL_SPI_Transmit(&SSD1351_SPI_PORT, &cmd, sizeof(cmd), HAL_MAX_DELAY);
 }
 
 static void SSD1351_WriteData(uint8_t* buff, size_t buff_size)
 {
-  LOG(OLED, DEBUG, "D: [%d]", buff_size);
+  // LOG(OLED, DEBUG, "D: [%d]", buff_size);
   HAL_GPIO_WritePin(SSD1351_DC_GPIO_Port, SSD1351_DC_Pin, GPIO_PIN_SET);
 
   // split data in small chunks because HAL can't send more then 64K at once
@@ -146,6 +146,36 @@ void SSD1351_DrawPixel(uint16_t x, uint16_t y, uint16_t color)
   SSD1351_SetAddressWindow(x, y, x+1, y+1);
   uint8_t data[] = { color >> 8, color & 0xFF };
   SSD1351_WriteData(data, sizeof(data));
+
+  SSD1351_Unselect();
+}
+
+void SSD1351_DrawRectangle(uint16_t x1, uint16_t y1, uint8_t x2, uint8_t y2, uint16_t *pcolor)
+{
+  if ((x1 >= SSD1351_WIDTH) || (y1 >= SSD1351_HEIGHT) ||
+      (x2 >= SSD1351_WIDTH) || (y2 >= SSD1351_HEIGHT))
+  {
+    return;
+  }
+
+  int height = y2 - y1 + 1;
+  int width = x2 - x1 + 1;
+
+  SSD1351_Select();
+
+  SSD1351_SetAddressWindow(x1, y1, x2, y2);
+
+  // SSD1351_WriteData(pcolor, width * height * 2);
+
+  for (int i = 0; i < width * height; i++)
+  {
+    // TODO: change endianness
+    uint8_t data[] = { *pcolor >> 8, *pcolor & 0xFF };
+    SSD1351_WriteData((uint8_t *)data, sizeof(uint16_t));
+    pcolor++;
+  }
+  // uint8_t data[] = { color >> 8, color & 0xFF };
+  // SSD1351_WriteData(data, sizeof(data));
 
   SSD1351_Unselect();
 }

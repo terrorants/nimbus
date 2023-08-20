@@ -33,10 +33,15 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "features.h"
 #include "drv_vcp.h"
 #include "tk_shell.h"
 #include "tmr.h"
+#include "nv.h"
+
+#ifdef FEATURE_OLED
 #include "oled_manager.h"
+#endif // FEATURE_OLED
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -94,6 +99,7 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
   VCP_Init(); // dependent on MX_USB_DEVICE_Init()
+  NV_Init();
   tmrInit();
   /* USER CODE END SysInit */
 
@@ -113,7 +119,9 @@ int main(void)
 
   LOG(APP, INFO, "Nimbus init complete!");
 
+  #ifdef FEATURE_OLED
   OLED_Init();
+  #endif // FEATURE_OLED
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -122,8 +130,10 @@ int main(void)
   {
     // TODO: Audio playback
 
+    #ifdef FEATURE_OLED
     // Display
     OLED_Service();
+    #endif // FEATURE_OLED
 
     // TODO: Button handling
 

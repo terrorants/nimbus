@@ -82,6 +82,11 @@ void VCP_Flush(void)
     return; // nothing to flush
   }
 
+  if (USBD_CDC_IsOpened() == false)
+  {
+    return;
+  }
+
   while ((huart3.gState != HAL_UART_STATE_READY) && (CDC_IsBusy() && tmrElapsedMs(start) < 3000));
 
   if (txLen > bytesToEnd)

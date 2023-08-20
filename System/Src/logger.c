@@ -25,6 +25,7 @@
 static const char *modStr[LOGGER_MODULE_MAX] =
 {
   " APP",
+  "FLSH",
   " USB",
   " LOG",
   "STOR",
@@ -40,9 +41,10 @@ static const char levelChar[LOGGER_LEVEL_MAX] =
   'D'
 };
 
-const uint8_t loggerLevels[LOGGER_MODULE_MAX] =
+uint8_t logger_levels[LOGGER_MODULE_MAX] =
 {
   [LOGGER_MODULE_APP]  = LOGGER_LEVEL_MASK(E, W, I, D),
+  [LOGGER_MODULE_FLSH] = LOGGER_LEVEL_MASK(E, W, I, _),
   [LOGGER_MODULE_USB]  = LOGGER_LEVEL_MASK(E, W, I, D),
   [LOGGER_MODULE_LOG]  = LOGGER_LEVEL_MASK(E, W, I, D),
   [LOGGER_MODULE_STOR] = LOGGER_LEVEL_MASK(E, W, I, D),
@@ -80,7 +82,7 @@ void loggerPrint(logger_module_e module, logger_level_e lvl, const char *fmt, ..
 {
   va_list args;
 
-  if ((loggerLevels[module] & BMASK(lvl)) != 0)
+  if ((logger_levels[module] & BMASK(lvl)) != 0)
   {
     va_start(args, fmt);
     loggerPrintf("[%s] %c ", modStr[module], levelChar[lvl]);
