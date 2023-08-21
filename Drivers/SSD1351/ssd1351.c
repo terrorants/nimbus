@@ -177,7 +177,7 @@ void SSD1351_DrawRectangle(uint16_t x1, uint16_t y1, uint8_t x2, uint8_t y2, uin
   }
 #else
   // uint8_t data[] = { color >> 8, color & 0xFF };
-  SSD1351_WriteData(pcolor, height * width * sizeof(uint16_t));
+  SSD1351_WriteData((uint8_t *)pcolor, height * width * sizeof(uint16_t));
 #endif
 
   SSD1351_Unselect();

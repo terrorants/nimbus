@@ -53,7 +53,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+void Custom_Error_Handler(int blinks);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

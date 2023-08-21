@@ -12,16 +12,21 @@
 #include "stm32f4xx.h"
 #include "target.h"
 
-TK_SHELL_METHOD(sys, reset);
-
 TK_SHELL_METHOD(sys, reset)
 {
   targetReset();
   return 0;
 }
 
+TK_SHELL_METHOD(sys, crash)
+{
+  targetTriggerHardFault();
+  return 0;
+}
+
 TK_SHELL_VERBS(sys) =
 {
     TK_SHELL_VERB(sys, reset, "Reset chip"),
+    TK_SHELL_VERB(sys, crash, "Crash system"),
     { "", NULL, "" }
 };

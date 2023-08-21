@@ -192,7 +192,27 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+static void blinkLED(int num_of_times)
+{
+  for (int i = 0; i < num_of_times; i++)
+  {
+    HAL_GPIO_WritePin(USER_LED_GPIO_Port, USER_LED_Pin, GPIO_PIN_SET);
+    tmrSwDelay_us(100000);
+    HAL_GPIO_WritePin(USER_LED_GPIO_Port, USER_LED_Pin, GPIO_PIN_RESET);
+    tmrSwDelay_us(100000);
+  }
+}
 
+void Custom_Error_Handler(int blinks)
+{
+  __disable_irq();
+  while (1)
+  {
+    blinkLED(blinks);
+
+    tmrSwDelay_us(1000000);
+  }
+}
 /* USER CODE END 4 */
 
 /**
@@ -203,15 +223,12 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  bool led_on = false;
-
   __disable_irq();
   while (1)
   {
-    HAL_GPIO_WritePin(USER_LED_GPIO_Port, USER_LED_Pin, led_on ? GPIO_PIN_SET : GPIO_PIN_RESET);
-    led_on = !led_on;
+    blinkLED(1);
 
-    HAL_Delay(1000);
+    tmrSwDelay_us(1000000);
   }
   /* USER CODE END Error_Handler_Debug */
 }

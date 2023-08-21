@@ -15,7 +15,7 @@
 #include "usb_device.h"
 #include "ssd1351.h"
 
-TK_SHELL_METHOD(sd, usb);
+static char path[128];
 
 TK_SHELL_METHOD(sd, usb)
 {
@@ -61,8 +61,98 @@ TK_SHELL_METHOD(sd, usb)
   return 0;
 }
 
+TK_SHELL_METHOD(sd, ls)
+{
+  FRESULT res;
+  DIR dir;
+
+  res = f_opendir(&dir, path);
+
+  if (res != FR_OK)
+  {
+    PRINTF("> sd:fail %d\n", res);
+    return 0;
+  }
+
+  while (1)
+  {
+    FILINFO fno;
+
+    res = f_readdir(&dir, &fno);
+
+    if (res != FR_OK)
+    {
+      PRINTF("> sd:fail %d\n", res);
+      return 0;
+    }
+
+    if (fno.fname[0] == 0)
+    {
+      break;
+    }
+
+    PRINTF("%c%c%c%c%c %10d %04d-%02d-%02d %02d:%02d:%02d %s\n",
+          ((fno.fattrib & AM_DIR) ? 'D' : '-'),
+          ((fno.fattrib & AM_RDO) ? 'R' : '-'),
+          ((fno.fattrib & AM_SYS) ? 'S' : '-'),
+          ((fno.fattrib & AM_HID) ? 'H' : '-'),
+          ((fno.fattrib & AM_ARC) ? 'A' : '-'),
+          (int)fno.fsize,
+          (fno.fdate >> 9 & 0x7F) + 1980,
+          (fno.fdate >> 5 & 0xF),
+          (fno.fdate & 0x1F),
+          (fno.ftime >> 11 & 0x1F),
+          (fno.ftime >> 5 & 0x3F),
+          (fno.ftime & 0x1F),
+          fno.fname);
+  }
+
+  PRINTF("> sd:ok\n");
+  f_closedir(&dir);
+
+  return 0;
+}
+
+TK_SHELL_METHOD(sd, pwd)
+{
+  PRINTF("> sd:ok %s/\n", path);
+
+  return 0;
+}
+
+TK_SHELL_METHOD(sd, cd)
+{
+  int i = 0;
+  FRESULT res;
+  DIR dir;
+
+  if (argc != 1)
+  {
+    PRINTF("Invalid number of arguments!\n");
+    return -1;
+  }
+
+  res = f_opendir(&dir, argv[i]);
+
+  if (res != FR_OK)
+  {
+    PRINTF("> sd:fail %d\n", res);
+  }
+  else
+  {
+    strncpy(path, argv[i], sizeof(path));
+    PRINTF("> sd:ok %s/\n", path);
+    f_closedir(&dir);
+  }
+
+  return 0;
+}
+
 TK_SHELL_VERBS(sd) =
 {
     TK_SHELL_VERB(sd, usb, "SD mount to USB"),
+    TK_SHELL_VERB(sd, ls, "list files"),
+    TK_SHELL_VERB(sd, pwd, "Print working directory"),
+    TK_SHELL_VERB(sd, cd, "Change directory"),
     { "", NULL, "" }
 };
