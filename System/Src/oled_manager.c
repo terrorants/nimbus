@@ -12,7 +12,7 @@
 #define VRES 128
 
 #define SPLASH_SCREEN_TIMEOUT_MS  30000
-#define LVGL_TIMEOUT_MS           5000
+#define LVGL_TIMEOUT_MS           5
 
 //Frame buffers
 /*Static or global buffer(s). The second buffer is optional*/
@@ -90,7 +90,7 @@ void OLED_Init(void)
 
   LOG(OLED, INFO, "Displaying splash image...");
 
-  // SSD1351_DrawImage(0, 0, 128, 128, (const uint16_t*)test_img_128x128);
+  SSD1351_DrawImage(0, 0, 128, 128, (const uint16_t*)test_img_128x128);
 
 #if LV_USE_LOG
   lv_log_register_print_cb(lvgl_printf);
@@ -130,7 +130,7 @@ void OLED_Init(void)
   }
 #else
   /*Change the active screen's background color*/
-  lv_obj_set_style_bg_color(lv_scr_act(), lv_color_hex(0x003a57), LV_PART_MAIN);
+  lv_obj_set_style_bg_color(lv_scr_act(), lv_color_hex(/*0x003a57*/0), LV_PART_MAIN);
 
   /*Create a white label, set its text and align it to the center*/
   lv_obj_t * label = lv_label_create(lv_scr_act());
