@@ -167,6 +167,7 @@ void SSD1351_DrawRectangle(uint16_t x1, uint16_t y1, uint8_t x2, uint8_t y2, uin
 
   // SSD1351_WriteData(pcolor, width * height * 2);
 
+#if 0
   for (int i = 0; i < width * height; i++)
   {
     // TODO: change endianness
@@ -174,8 +175,10 @@ void SSD1351_DrawRectangle(uint16_t x1, uint16_t y1, uint8_t x2, uint8_t y2, uin
     SSD1351_WriteData((uint8_t *)data, sizeof(uint16_t));
     pcolor++;
   }
+#else
   // uint8_t data[] = { color >> 8, color & 0xFF };
-  // SSD1351_WriteData(data, sizeof(data));
+  SSD1351_WriteData(pcolor, height * width * sizeof(uint16_t));
+#endif
 
   SSD1351_Unselect();
 }
