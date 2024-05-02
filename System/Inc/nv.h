@@ -13,8 +13,8 @@ typedef enum
 
 typedef enum
 {
-  NV_ID_INVALID = 0x0000,
   NV_ID_LOGGER_LEVELS = 0x0001,
+  NV_ID_INVALID = 0xFFFF,
   NV_ID_MAX
 } nv_id_e;
 

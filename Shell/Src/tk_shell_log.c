@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include "tk_shell_log.h"
 #include "stm32f4xx.h"
+#include "nv.h"
 
 TK_SHELL_METHOD(log, set);
 TK_SHELL_METHOD(log, get);
@@ -19,7 +20,7 @@ static logger_module_e getModuleFromStr(char *moduleStr)
   int i = 0;
   while (i < LOGGER_MODULE_MAX)
   {
-    if (strcmpi(moduleStr, logger_module_str[i]) == 0)
+    if (strcasecmp(moduleStr, logger_module_str[i]) == 0)
     {
       return i;
     }
@@ -52,6 +53,11 @@ static uint8_t getBitmaskFromStr(char *levelsStr)
     bm_lvl |= (1 << LOGGER_LEVEL_DEBUG);
   }
 
+  if (strcmp(levelsStr, "--") == 0)
+  {
+    bm_lvl = 0;
+  }
+
   return bm_lvl;
 }
 
@@ -80,7 +86,7 @@ TK_SHELL_METHOD(log, set)
         return -1;
     }
 
-    PRINTF("> log:ok\n");
+    PRINTF("> log:%s\n", NV_Write(NV_ID_LOGGER_LEVELS, logger_levels, sizeof(uint8_t) * LOGGER_MODULE_MAX) ? "ok" : "fail");
     return 0;
 }
 
@@ -96,18 +102,38 @@ TK_SHELL_METHOD(log, get)
       {
         PRINTF("e");
       }
+      else
+      {
+        PRINTF("-");
+      }
+
       if (logger_levels[module] & (1 << LOGGER_LEVEL_WARNING))
       {
         PRINTF("w");
       }
+      else
+      {
+        PRINTF("-");
+      }
+
       if (logger_levels[module] & (1 << LOGGER_LEVEL_INFO))
       {
         PRINTF("i");
       }
+      else
+      {
+        PRINTF("-");
+      }
+
       if (logger_levels[module] & (1 << LOGGER_LEVEL_DEBUG))
       {
         PRINTF("d");
       }
+      else
+      {
+        PRINTF("-");
+      }
+
       PRINTF("\n");
       module++;
     }

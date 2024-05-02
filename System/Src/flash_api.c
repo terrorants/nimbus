@@ -3,7 +3,7 @@
 #include "logger.h"
 #include "target.h"
 
-//#define CNFG_DEBUG_PRINT_ON_SUCCESS
+#define CNFG_DEBUG_PRINT_ON_SUCCESS
 
 #define FLASH_PAGE_SIZE 16*1024
 

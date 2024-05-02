@@ -158,13 +158,17 @@ static void nv_commit_ram_to_flash(void)
 
 static void nv_load_vars(void)
 {
-  uint32_t address = nvCtrl.headAddress;
+  uint32_t address = (uint32_t)((nv_area_s *)nvAreas[nvCtrl.activeArea].startAddr)->data;
   uint32_t endAddress = nvAreas[nvCtrl.activeArea].endAddr;
+
+  nvCtrl.headAddress = address;
 
   nv_var_s *var = (nv_var_s *)address;
 
   while (var->hdr.id != NV_ID_INVALID && address < endAddress)
   {
+    LOG(FLSH, INFO, "addr 0x%08X, id %d, size %d", var, var->hdr.id, var->hdr.size);
+
     nv_update_ram_entry(var);
 
     address += sizeof(nv_var_hdr_s) + var->hdr.size;
@@ -199,11 +203,12 @@ void NV_Init(void)
     NV_Reset();
     nvCtrl.activeArea = NV_AREA_0;
     nvCtrl.counter = 0;
-    return;
   }
-
-  nvCtrl.activeArea = (nv_area_e)higherIdx;
-  nvCtrl.counter = maxCtr;
+  else
+  {
+    nvCtrl.activeArea = (nv_area_e)higherIdx;
+    nvCtrl.counter = maxCtr;
+  }
 
   nv_load_vars();
 
