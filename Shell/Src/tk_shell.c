@@ -12,6 +12,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
+#include "drv_vcp.h"
 #include "tk_shell.h"
 #include "tk_shell_gpio.h"
 #include "tk_shell_sd.h"
@@ -19,6 +20,7 @@
 #include "tk_shell_disp.h"
 #include "tk_shell_sys.h"
 #include "tk_shell_nv.h"
+#include "tk_shell_log.h"
 
 //static const uint32_t reg_lookup[] =
 //{
@@ -101,6 +103,7 @@ static const tk_shell_command_s commands[] =
     TK_SHELL_COMMAND(i2c, "I2C commands"),
     TK_SHELL_COMMAND(sd, "SD Card commands"),
     TK_SHELL_COMMAND(disp, "Display commands"),
+    TK_SHELL_COMMAND(log, "Logger commands"),
 //    TK_SHELL_COMMAND(wm, "Wolfson Codec commands"),
 //    TK_SHELL_COMMAND(pcm, "Burr-Brown Codec commands"),
 //    TK_SHELL_COMMAND(sys, "System commands"),
@@ -366,7 +369,7 @@ static int TkShellProcessCommand(void)
     while (1)
     {
         // skip over whitespace
-        while (*buf && isspace(*buf))
+        while (*buf && isspace((int)*buf))
         {
           *buf = '\0';
           ++buf;
@@ -380,7 +383,7 @@ static int TkShellProcessCommand(void)
         argv[argc] = buf;
 
         // skip over the rest of arg until whitespace again
-        while (*buf && !isspace(*buf))
+        while (*buf && !isspace((int)*buf))
         {
             buf++;
         }

@@ -22,14 +22,14 @@
 // Ex:  LOGGER_LEVEL_MASK(E, W, _, _) means ERROR and WARNING have been enabled. All other logs are disabled.
 #define LOGGER_LEVEL_MASK(E, W, I, D) (LOGGER_LEVEL_ ## E ## _F | LOGGER_LEVEL_ ## W ## _F | LOGGER_LEVEL_ ## I ## _F | LOGGER_LEVEL_ ## D ## _F)
 
-static const char *modStr[LOGGER_MODULE_MAX] =
+const char *logger_module_str[LOGGER_MODULE_MAX] =
 {
-  " APP",
+  "APP",
   "FLSH",
-  " USB",
-  " LOG",
+  "USB",
+  "LOG",
   "STOR",
-  " BTN",
+  "BTN",
   "OLED",
 };
 
@@ -85,10 +85,17 @@ void loggerPrint(logger_module_e module, logger_level_e lvl, const char *fmt, ..
   if ((logger_levels[module] & BMASK(lvl)) != 0)
   {
     va_start(args, fmt);
-    loggerPrintf("[%s] %c ", modStr[module], levelChar[lvl]);
+    loggerPrintf("[%4s] %c ", logger_module_str[module], levelChar[lvl]);
     logger_vprintf(fmt, args);
     loggerPrintf("\n");
     va_end(args);
   }
 }
 
+void loggerSetModuleLevels(logger_module_e module, uint8_t bm_lvl)
+{
+  if (module < LOGGER_MODULE_MAX)
+  {
+    logger_levels[module] = bm_lvl;
+  }
+}

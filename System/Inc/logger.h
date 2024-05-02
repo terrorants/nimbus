@@ -28,11 +28,14 @@ typedef enum
 #define LOG(module, level, ...)   loggerPrint(LOGGER_MODULE_##module, LOGGER_LEVEL_##level, __VA_ARGS__)
 #define PRINTF(...)               loggerPrintf(__VA_ARGS__)
 
+extern const char *logger_module_str[LOGGER_MODULE_MAX];
 extern uint8_t logger_levels[LOGGER_MODULE_MAX];
 
 void loggerInit(void);
 
 void loggerPrint(logger_module_e module, logger_level_e lvl, const char *fmt, ...);
 void loggerPrintf(const char* format, ...);
+
+void loggerSetModuleLevels(logger_module_e module, uint8_t bm_lvl);
 
 #endif // LOGGER_H

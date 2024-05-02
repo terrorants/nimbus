@@ -65,25 +65,25 @@ TK_SHELL_METHOD(gpio, set)
     return 0;
 }
 
-TK_SHELL_METHOD(gpio, config)
-{
-    uint32_t port, pin, mode;
-    int i = 0;
+// TK_SHELL_METHOD(gpio, config)
+// {
+//     uint32_t port, pin, mode;
+//     int i = 0;
 
-    if (argc != 3)
-    {
-        PRINTF("Invalid number of arguments!\n");
-        return -1;
-    }
+//     if (argc != 3)
+//     {
+//         PRINTF("Invalid number of arguments!\n");
+//         return -1;
+//     }
 
-    port = atoi(argv[i++]);
-    pin = atoi(argv[i++]);
-    mode = atoi(argv[i]);
+//     port = atoi(argv[i++]);
+//     pin = atoi(argv[i++]);
+//     mode = atoi(argv[i]);
 
-//    CY_SYS_PINS_SET_DRIVE_MODE(reg_lookup[port], pin, mode);
+// //    CY_SYS_PINS_SET_DRIVE_MODE(reg_lookup[port], pin, mode);
 
-    return 0;
-}
+//     return 0;
+// }
 
 TK_SHELL_METHOD(gpio, get)
 {
@@ -107,7 +107,7 @@ TK_SHELL_METHOD(gpio, get)
 TK_SHELL_VERBS(gpio) =
 {
     TK_SHELL_VERB(gpio, set, "set GPIO state"),
-    TK_SHELL_VERB(gpio, config, "configure GPIO"),
+    // TK_SHELL_VERB(gpio, config, "configure GPIO"),
     TK_SHELL_VERB(gpio, get, "get GPIO state"),
     { "", NULL, "" }
 };
